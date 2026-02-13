@@ -92,13 +92,11 @@ Section Supplementary: Sensitivity Analysis
 """
 
 MODELS = ['jrc', 'wri', 'giri']
-METRICS = ['RP100', 'AAR']
+METRICS = ['AAR', 'protected_AAR']
 VULN_CURVES = ['JRC', 'EXP', 'BER']
 SOCIALS = ['gdp', 'rwi']
 
 rule flood_model_sensitivity_run:
     input:
         expand("data/results/social_flood/countries/{ISO3}/inequality_metrics/{ISO3}_ADM0_metrics_{MODEL}-flood_{METRIC}_V-{VULN_CURVE}_S-{SOCIAL}.gpkg",
-            ISO3=config['iso_codes'], MODEL=MODELS, METRIC=METRICS, VULN_CURVE=VULN_CURVES, SOCIAL=SOCIALS),
-        expand("data/results/social_flood/countries/{ISO3}/inequality_metrics/{ISO3}_ADM0_metrics_{MODEL}-flood_protected_AAR_V-{VULN_CURVE}_S-{SOCIAL}.gpkg",
-                    ISO3=config['iso_codes'], MODEL=MODELS, METRIC=METRICS, VULN_CURVE=VULN_CURVES, SOCIAL=SOCIALS)
+            ISO3=config['iso_codes'], MODEL=MODELS, METRIC=METRICS, VULN_CURVE=VULN_CURVES, SOCIAL=SOCIALS)
