@@ -27,6 +27,7 @@ Steps:
 2. Copy the "Results" folder into top level directory
 
 3. Run the notebooks in order:
+
 `notebooks/1_observed_figures.ipynb`
 
 `notebooks/2_modelled_figures.ipynb`
