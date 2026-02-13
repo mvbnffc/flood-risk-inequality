@@ -27,11 +27,11 @@ Steps:
 2. Copy the "Results" folder into top level directory
 
 3. Run the notebooks in order:
-    notebooks/1_observed_figures.ipynb
-    notebooks/2_modelled_figures.ipynb
-    notebooks/3_observed-modelled_figure.ipynb
-    notebooks/4_adaptation_figures.ipynb
-    notebooks/S_sensitivity_analysis.ipynb
+    `notebooks/1_observed_figures.ipynb`
+    `notebooks/2_modelled_figures.ipynb`
+    `notebooks/3_observed-modelled_figure.ipynb`
+    `notebooks/4_adaptation_figures.ipynb`
+    `notebooks/S_sensitivity_analysis.ipynb`
 
 ### Option B — Full pipeline reproduction (slow, HPC)
 
