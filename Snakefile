@@ -27,7 +27,6 @@ include: "rules/download/urbanisation.smk"
 include: "rules/download/ghs_built.smk"
 include: "rules/download/giri-bem.smk"
 include: "rules/download/openstreetmap.smk"
-include: "rules/download/capital_stock.smk"
 
 include: "rules/prepare/ghs_pop.smk"
 include: "rules/prepare/jrc_flood.smk"
