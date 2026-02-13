@@ -2,16 +2,10 @@
 ### Analysis Countries ###
 ##########################
 
-# # ISO Codes for all analysis countries (108 total)
-# iso_codes:
-# - "BRA"
-# - "IND"
-
-# Limit to 92 countries where there are modelled and observed results.
 iso_codes:
 - "AGO"
 - "ALB"
-- "ARG" # MEM
+- "ARG"
 - "ARM"
 - "BDI"
 - "BEN"
@@ -21,7 +15,7 @@ iso_codes:
 - "BIH"
 - "BLZ"
 - "BOL"
-- "BRA" # MEM
+- "BRA"
 - "BTN"
 - "BWA"
 - "CAF"
@@ -47,11 +41,11 @@ iso_codes:
 - "GUY"
 - "HND"
 - "HTI"
-- "IDN" # MEM
-- "IND" # MEM
+- "IDN"
+- "IND"
 - "JAM"
 - "JOR"
-- "KAZ" # MEM
+- "KAZ"
 - "KEN"
 - "KGZ"
 - "KHM"
@@ -62,7 +56,7 @@ iso_codes:
 - "MAR"
 - "MDA"
 - "MDG"
-- "MEX" # MEM
+- "MEX" 
 - "MKD"
 - "MLI"
 - "MNE"
@@ -98,9 +92,6 @@ iso_codes:
 - "UKR"
 - "UZB"
 - "VNM"
-- "ZAF" # MEM
+- "ZAF"
 - "ZMB"
 - "ZWE"
-
-problem_iso_codes:
-- "BRA"
