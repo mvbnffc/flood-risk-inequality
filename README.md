@@ -57,8 +57,81 @@ cd flood-risk-inequality
 ```
 
 ### 2. Clone the repository
-We recommend micromambam but conda also works
+We recommend micromamba but conda also works
 ```bash
-micromamba create -f envs/environment.yml
+micromamba create -f environment.yml
 micromamba activate flood-risk-inequality
 ```
+
+--- 
+
+## Running the full pipeline
+The analysis follows a [Snakemake](https://snakemake.readthedocs.io/) workflow.
+
+**Hardware used for development:**
+- Linux HPC cluster (8 cores, 300 GB RAM)
+- Total wall-clock time: X days (with parallelisation)
+
+The snakemake rules required to replicate the analysis in the paper can be found in `rules/analyze/paper_bulk_anaysis.smk`
+Note: the timings listed below assume the rules are run sequentially (some preceding rules will generate the data needed for subsequent analyses)
+
+The workflow downloads and prepares all necessary data in 'data/inputs/' and results are stored in 'data/results/'
+
+**Steps:**
+1. Activate the flood-risk-inequality environment and use navigate to flood-risk-inequality directory from command line
+
+2. Run analysis to calculate observed flooding metrics at national scale
+```bash
+snakemake -c8 observed_metrics_for_all_countries
+```
+    *Runtime: ~X hours*
+
+3. Run analysis to calculate decomposed (across urban areas) observed flood metrics at national scale
+```bash
+snakemake -c8 observed_metrics_decomposed_for_all_countries
+```
+    *Runtime: ~X hours*
+
+4. Clip all individual observed events
+```bash
+snakemake -c8 clip_all_gfd_events
+```
+    *Runtime: ~X hours*
+
+5. Run analysis calculating all metrics for individual observed events
+```bash
+snakemake -c8 metrics_all_gfd_events
+```
+    *Runtime: ~X hours*
+
+6. Run analysis for modelled flooding, calculating metrics at the national scale 
+```bash
+snakemake -c8 flood_model_metrics_ADM0_all_countries
+```
+    *Runtime: ~X hours*
+
+7. Run analysis for modelled flooding, calculating the decomposed metrics at the ADM1 level
+```bash
+snakemake -c8 flood_model_admin_CI_decomposed
+```
+    *Runtime: ~X hours*
+
+8. Run flood risk and adaptation assessment for all flood models
+```bash
+snakemake -c8 bulk_flood_risk_and_adaptation_analysis
+```
+    *Runtime: ~X hours*
+
+9. Run metric analysis for adaptation scenarios
+```bash
+snakemake -c8 bulk_social_metrics_adaptation
+```
+    *Runtime: ~X hours*
+
+10. Run sensitivity analysis
+```bash
+snakemake -c8 flood_model_sensitivity_run
+```
+    *Runtime: ~X hours*
+
+All outputs are written to `data/results/`. The notebooks in `notebooks/` read from this directory to produce all figures and tables.
