@@ -75,7 +75,7 @@ The analysis follows a [Snakemake](https://snakemake.readthedocs.io/) workflow.
 The snakemake rules required to replicate the analysis in the paper can be found in `rules/analyze/paper_bulk_anaysis.smk`
 Note: the timings listed below assume the rules are run sequentially (some preceding rules will generate the data needed for subsequent analyses)
 
-The workflow downloads and prepares all necessary data in 'data/inputs/' and results are stored in 'data/results/'
+The workflow downloads and prepares all necessary data in `data/inputs/` and results are stored in `data/results/`
 
 **Steps:**
 1. Activate the flood-risk-inequality environment and use navigate to flood-risk-inequality directory from command line
