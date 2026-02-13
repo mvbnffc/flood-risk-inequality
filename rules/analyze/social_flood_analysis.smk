@@ -325,10 +325,11 @@ rule inequality_metrics_observed:
         social_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_{SOCIAL}.tif",
         pop_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_ghs-pop.tif",
         mask_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_surface_water.tif",
-        risk_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_gfd-flood.tif",
+        risk_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_{MODEL}-flood.tif",
     output:
-        regional_CI = "data/results/social_flood/countries/{ISO3}/inequality_metrics/{ISO3}_{ADMIN_SLUG}_metrics_gfd-flood_S-{SOCIAL}.gpkg",
+        regional_CI = "data/results/social_flood/countries/{ISO3}/inequality_metrics/{ISO3}_{ADMIN_SLUG}_metrics_{MODEL}-flood_S-{SOCIAL}.gpkg",
     wildcard_constraints:
+        MODEL="gfd",
         SOCIAL="rwi|gdp",
         ADMIN_SLUG="ADM0|ADM1|ADM2"
     script:
@@ -351,10 +352,11 @@ rule inequality_metrics_observed_decomposed:
         pop_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_ghs-pop.tif",
         urban_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_ghs-mod_fixed.tif",
         mask_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_surface_water.tif",
-        risk_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_gfd-flood.tif",
+        risk_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_{MODEL}-flood.tif",
     output:
-        regional_CI = "data/results/social_flood/countries/{ISO3}/inequality_metrics/{ISO3}_{ADMIN_SLUG}_decomposed_metrics_gfd-flood_S-{SOCIAL}.gpkg",
+        regional_CI = "data/results/social_flood/countries/{ISO3}/inequality_metrics/{ISO3}_{ADMIN_SLUG}_decomposed_metrics_{MODEL}-flood_S-{SOCIAL}.gpkg",
     wildcard_constraints:
+        MODEL="gfd",
         SOCIAL="rwi|gdp",
         ADMIN_SLUG="ADM0|ADM1|ADM2"
     script:
@@ -376,10 +378,11 @@ rule inequality_metrics_observed_admin_decomposed:
         urban_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_ghs-mod_fixed.tif",
         pop_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_ghs-pop.tif",
         mask_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_surface_water.tif",
-        risk_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_gfd-flood.tif",
+        risk_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_{MODEL}-flood.tif",
     output:
-        regional_CI = "data/results/social_flood/countries/{ISO3}/inequality_metrics/{ISO3}_{ADMIN_SLUG}_admin-decomposed_metrics_gfd-flood_S-{SOCIAL}.gpkg",
+        regional_CI = "data/results/social_flood/countries/{ISO3}/inequality_metrics/{ISO3}_{ADMIN_SLUG}_admin-decomposed_metrics_{MODEL}-flood_S-{SOCIAL}.gpkg",
     wildcard_constraints:
+        MODEL="gfd",
         SOCIAL="rwi|gdp",
         ADMIN_SLUG="ADM1|ADM2"
     script:
