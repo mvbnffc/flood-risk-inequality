@@ -84,54 +84,54 @@ The workflow downloads and prepares all necessary data in 'data/inputs/' and res
 ```bash
 snakemake -c8 observed_metrics_for_all_countries
 ```
-Runtime: ~X hours
+*Runtime: ~X hours*
 
 3. Run analysis to calculate decomposed (across urban areas) observed flood metrics at national scale
 ```bash
 snakemake -c8 observed_metrics_decomposed_for_all_countries
 ```
-Runtime: ~X hours
+*Runtime: ~X hours*
 
 4. Clip all individual observed events
 ```bash
 snakemake -c8 clip_all_gfd_events
 ```
-Runtime: ~X hours
+*Runtime: ~X hours*
 
 5. Run analysis calculating all metrics for individual observed events
 ```bash
 snakemake -c8 metrics_all_gfd_events
 ```
-Runtime: ~X hours
+*Runtime: ~X hours*
 
 6. Run analysis for modelled flooding, calculating metrics at the national scale 
 ```bash
 snakemake -c8 flood_model_metrics_ADM0_all_countries
 ```
-Runtime: ~X hours
+*Runtime: ~X hours*
 
 7. Run analysis for modelled flooding, calculating the decomposed metrics at the ADM1 level
 ```bash
 snakemake -c8 flood_model_admin_CI_decomposed
 ```
-Runtime: ~X hours
+*Runtime: ~X hours*
 
 8. Run flood risk and adaptation assessment for all flood models
 ```bash
 snakemake -c8 bulk_flood_risk_and_adaptation_analysis
 ```
-Runtime: ~X hours
+*Runtime: ~X hours*
 
 9. Run metric analysis for adaptation scenarios
 ```bash
 snakemake -c8 bulk_social_metrics_adaptation
 ```
-Runtime: ~X hours
+*Runtime: ~X hours*
 
 10. Run sensitivity analysis
 ```bash
 snakemake -c8 flood_model_sensitivity_run
 ```
-Runtime: ~X hours
+*Runtime: ~X hours*
 
-** All outputs are written to `data/results/`. The notebooks in `notebooks/` read from this directory to produce all figures and tables. **
+**All outputs are written to `data/results/`. The notebooks in `notebooks/` read from this directory to produce all figures and tables.**
