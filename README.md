@@ -24,7 +24,7 @@ Steps:
 1. Download processed results from Zenodo  
    → [ZENODO LINK HERE]
 
-2. Copy the "Results" folder into top level directory
+2. Copy the "Data" folder into top level directory
 
 3. Run the notebooks in order:
 
@@ -48,7 +48,7 @@ This regenerates all intermediate datasets including hazard processing, exposure
 
 Typical runtime:
 - ~1–3 days
-- 32–300 GB RAM for some steps
+- 32–400 GB RAM for some steps
 - Parallel execution recommended
 
 ---
@@ -74,8 +74,8 @@ micromamba activate flood-risk-inequality
 The analysis follows a [Snakemake](https://snakemake.readthedocs.io/) workflow.
 
 **Hardware used for development:**
-- Linux HPC cluster (8 cores, 300 GB RAM)
-- Total wall-clock time: X days (with parallelisation)
+- Linux HPC cluster (8 cores, 400 GB RAM)
+- Total wall-clock time: ~X days (with parallelisation)
 
 The snakemake rules required to replicate the analysis in the paper can be found in `rules/analyze/paper_bulk_anaysis.smk`
 Note: the timings listed below assume the rules are run sequentially (some preceding rules will generate the data needed for subsequent analyses)
@@ -89,54 +89,54 @@ The workflow downloads and prepares all necessary data in `data/inputs/` and res
 ```bash
 snakemake -c8 observed_metrics_for_all_countries
 ```
-*Runtime: ~X hours*
+*Runtime: ~8 hours*
 
 3. Run analysis to calculate decomposed (across urban areas) observed flood metrics at national scale
 ```bash
 snakemake -c8 observed_metrics_decomposed_for_all_countries
 ```
-*Runtime: ~X hours*
+*Runtime: ~0.5 hours*
 
 4. Clip all individual observed events
 ```bash
 snakemake -c8 clip_all_gfd_events
 ```
-*Runtime: ~X hours*
+*Runtime: ~1 hours*
 
 5. Run analysis calculating all metrics for individual observed events
 ```bash
 snakemake -c8 metrics_all_gfd_events
 ```
-*Runtime: ~X hours*
+*Runtime: ~5 hours*
 
 6. Run analysis for modelled flooding, calculating metrics at the national scale 
 ```bash
 snakemake -c8 flood_model_metrics_ADM0_all_countries
 ```
-*Runtime: ~X hours*
+*Runtime: ~8 hours*
 
 7. Run analysis for modelled flooding, calculating the decomposed metrics at the ADM1 level
 ```bash
 snakemake -c8 flood_model_admin_CI_decomposed
 ```
-*Runtime: ~X hours*
+*Runtime: ~1 hours*
 
 8. Run flood risk and adaptation assessment for all flood models
 ```bash
 snakemake -c8 bulk_flood_risk_and_adaptation_analysis
 ```
-*Runtime: ~X hours*
+*Runtime: ~23 hours*
 
 9. Run metric analysis for adaptation scenarios
 ```bash
 snakemake -c8 bulk_social_metrics_adaptation
 ```
-*Runtime: ~X hours*
+*Runtime: ~2 hours*
 
 10. Run sensitivity analysis
 ```bash
 snakemake -c8 flood_model_sensitivity_run
 ```
-*Runtime: ~X hours*
+*Runtime: ~24 hours*
 
 **All outputs are written to `data/results/`. The notebooks in `notebooks/` read from this directory to produce all figures and tables.**
