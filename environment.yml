@@ -28,3 +28,8 @@ dependencies:
 - requests
 - jq
 - gsutil
+- pycountry
+- adjustText
+- statsmodels
+- seaborn
+- plotly
