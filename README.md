@@ -66,13 +66,13 @@ There are to possible environments: Linux/Mac or Windows. The full analytical pi
 You can use Windows to run simple figure reproduction, not full analysis
 
 To install environment on Linux or Mac
-We recommend micromamba but conda also works
+(we recommend micromamba but conda also works)
 ```bash
 micromamba create -f environment.linux-mac.yml
 micromamba activate flood-risk-inequality
 ```
 
-To install environment on Windows (can reproduce Figures only)
+To install environment on Windows (can reproduce figures only)
 ```bash
 conda env create -f environment.windows.yml
 conda activate flood-risk-inequality
