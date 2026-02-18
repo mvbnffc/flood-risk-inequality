@@ -47,7 +47,7 @@ This regenerates all intermediate datasets including hazard processing, exposure
 ⚠️ This workflow was designed for a Linux HPC cluster and requires substantial compute.
 
 Typical runtime:
-- ~1–3 days
+- ~3–4 days
 - 32–400 GB RAM for some steps
 - Parallel execution recommended
 
