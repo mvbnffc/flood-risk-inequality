@@ -61,11 +61,21 @@ git clone https://github.com/[user]/flood-risk-inequality.git
 cd flood-risk-inequality
 ```
 
-### 2. Clone the repository
+### 2. Set up the environment
+There are to possible environments: Linux/Mac or Windows. The full analytical pipeline has only been tested on Linux.
+You can use Windows to run simple figure reproduction, not full analysis
+
+To install environment on Linux or Mac
 We recommend micromamba but conda also works
 ```bash
-micromamba create -f environment.yml
+micromamba create -f environment.linux-mac.yml
 micromamba activate flood-risk-inequality
+```
+
+To install environment on Windows (can reproduce Figures only)
+```bash
+conda env create -f environment.windows.yml
+conda activate flood-risk-inequality
 ```
 
 --- 
