@@ -1,0 +1,42 @@
+name: flood-risk-inequality
+channels:
+  - conda-forge
+  - nodefaults
+dependencies:
+  - python=3.11
+  - pip
+
+  # Core scientific stack
+  - numpy
+  - pandas
+  - xarray
+  - scipy
+  - statsmodels
+  - tqdm
+
+  # Plotting
+  - matplotlib
+  - seaborn
+  - plotly
+  - adjusttext
+
+  # Geospatial stack
+  - geopandas
+  - shapely
+  - pyproj
+  - fiona
+  - gdal
+  - rasterio
+  - rasterstats
+  - exactextract
+
+  # Notebooks
+  - jupyter
+  - ipykernel
+
+  # Utilities
+  - requests
+  - pycountry
+  - openpyxl
+  - jq
+

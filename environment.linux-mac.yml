@@ -1,0 +1,51 @@
+name: flood-risk-inequality
+channels:
+  - conda-forge
+  - bioconda
+  - nodefaults
+dependencies:
+  - python=3.11
+  - pip
+
+  # Workflow (Linux/macOS)
+  - snakemake=7.18.2
+
+  # Core scientific stack
+  - numpy
+  - pandas
+  - xarray
+  - scipy
+  - statsmodels
+  - tqdm
+
+  # Plotting
+  - matplotlib
+  - seaborn
+  - plotly
+  - adjusttext
+
+  # Geospatial stack
+  - geopandas
+  - shapely
+  - pyproj
+  - fiona
+  - gdal
+  - rasterio
+  - rasterstats
+  - exactextract
+
+  # Notebooks
+  - jupyter
+  - ipykernel
+
+  # Utilities
+  - requests
+  - pycountry
+  - openpyxl
+  - jq
+  - osmium-tool
+
+  # If you need any pip-only bits
+  - pip:
+      - download-water-data
+
