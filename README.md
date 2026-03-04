@@ -22,7 +22,7 @@ Time required: ~15–30 minutes
 
 Steps:
 1. Download processed results from Zenodo  
-   → [ZENODO LINK HERE]
+   → https://doi.org/10.5281/zenodo.18863904
 
 2. Copy the "Data" folder into top level directory
 
@@ -57,7 +57,7 @@ Typical runtime:
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/[user]/flood-risk-inequality.git
+git clone https://github.com/mvbnffc/flood-risk-inequality.git
 cd flood-risk-inequality
 ```
 
