@@ -14,7 +14,7 @@ rule download_deltares_coastal:
     shell:
         """
         mkdir -p $(dirname {output.flood_file})
-        wget -0 {output.flood_file}.tmp "https://deltaresfloodssa.blob.core.windows.net/floods/v2021.06/global/MERIT/90m/GFM_global_MERITDEM90m_2018slr_rp{wildcards.RP}_masked.nc"
+        wget -O {output.flood_file}.tmp "https://deltaresfloodssa.blob.core.windows.net/floods/v2021.06/global/MERIT/90m/GFM_global_MERITDEM90m_2018slr_rp{wildcards.RP}_masked.nc"
         mv {output.flood_file}.tmp {output.flood_file}
         """
 
