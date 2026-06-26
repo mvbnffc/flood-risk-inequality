@@ -12,7 +12,7 @@ rule download_deltares_coastal:
     wildcard_constraints:
         RP="0002|0005|0010|0025|0050|0100|0250"
     params:
-        blob="https://deltaresfloodssa.blob.core.windows.net/floods/v2021.06/global/MERIT/90m/GFM_global_MERITDEM90m_2018slr_rp{RP}_masked.nc"
+        blob="https://deltaresfloodssa.blob.core.windows.net/floods/v2021.06/global/MERITDEM/90m/GFM_global_MERITDEM90m_2018slr_rp{RP}_masked.nc"
     shell:
         r"""
         mkdir -p $(dirname {output.flood_file})
