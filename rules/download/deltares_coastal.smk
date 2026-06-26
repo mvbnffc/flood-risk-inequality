@@ -22,3 +22,24 @@ rule download_deltares_coastal:
         mv {output.flood_file}.tmp {output.flood_file}
         """
 
+rule deltares_nc_to_gtiff:
+    input:
+        nc="data/inputs/flood/Deltares_coastal/Deltares_coastal_MERIT90m_2018_rp{RP}.nc"
+    output:
+        tif="data/inputs/flood/Deltares_coastal/Deltares_coastal_MERIT90m_2018_rp{RP}.tif"
+    wildcard_constraints:
+        RP="0002|0005|0010|0025|0050|0100|0250"
+    threads: 4
+    shell:
+        r"""
+        gdal_translate \
+            -of GTiff \
+            -a_srs EPSG:4326 \
+            -co BIGTIFF=YES \
+            -co TILED=YES \
+            -co COMPRESS=DEFLATE \
+            -co PREDICTOR=3 \
+            -co NUM_THREADS=ALL_CPUS \
+            NETCDF:"{input.nc}":inun \
+            {output.tif}
+        """
