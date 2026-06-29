@@ -10,4 +10,4 @@ rule create_wealth_quintiles:
     output:
         wealth_quintiles="data/results/national_tooling/countries/{ISO3}/{ISO3}_wealth_quintiles.tif"
     script:
-        "../../scripts/build_wealth_quintiles.py"
+        "./build_wealth_quintiles.py"
