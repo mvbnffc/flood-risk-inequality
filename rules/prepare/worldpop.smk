@@ -15,4 +15,4 @@ rule build_wp_demographic_groups:
         female_15_49="data/inputs/analysis/countries/{ISO3}/{ISO3}_worldpop_female_15-49.tif",
         older_65plus="data/inputs/analysis/countries/{ISO3}/{ISO3}_worldpop_older_65plus.tif"
     script:
-        "scripts/build_wp_demographics.py"
+        "./build_wp_demographics.py"
