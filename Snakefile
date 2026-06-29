@@ -50,3 +50,5 @@ include: "rules/analyze/flood_risk.smk"
 include: "rules/analyze/social_flood_analysis.smk"
 include: "rules/analyze/adaptation_costs.smk"
 include: "rules/analyze/paper_bulk_analysis.smk"
+
+include: "rules/national_tool/wealth_quintiles.smk"
