@@ -4,7 +4,7 @@ Rules for calculating population wealth quintiles using the RWI dataset.
 
 rule create_wealth_quintiles:
     input:
-        admin_areas = "data/inputs/boundaries/{ISO3}/geobounds_{ISO3}.gpkg",
+        boundary_file = "data/inputs/boundaries/{ISO3}/geobounds_{ISO3}.gpkg",
         pop_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_worldpop_total.tif",
         rwi_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_rwi.tif"
     output:
