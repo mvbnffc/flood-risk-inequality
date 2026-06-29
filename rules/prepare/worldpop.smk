@@ -4,7 +4,8 @@ Rules for prepping worldpop data
 
 rule build_wp_demographic_groups:
     input:
-        wp_dir="data/inputs/worldpop/demographics/{ISO3}"
+        wp_dir="data/inputs/worldpop/demographics/{ISO3}",
+        pop_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_ghs-pop.tif"
     output:
         total="data/inputs/analysis/countries/{ISO3}/{ISO3}_worldpop_total.tif",
         female="data/inputs/analysis/countries/{ISO3}/{ISO3}_worldpop_female.tif",
