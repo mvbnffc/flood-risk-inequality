@@ -23,7 +23,7 @@ rule calculate_population_risk_metrics:
         female_15_49_pop="data/inputs/analysis/countries/{ISO3}/{ISO3}_worldpop_female_15-49.tif",
         older_65plus_pop="data/inputs/analysis/countries/{ISO3}/{ISO3}_worldpop_older_65plus.tif",
         wealth_quintiles="data/results/national_tooling/countries/{ISO3}/{ISO3}_wealth_quintiles.tif",
-        mask_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_water_mask.tif"
+        mask_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_surface_water.tif"
     output:
         regional_population_risk="data/results/national_tooling/countries/{ISO3}/{ISO3}_{ADMIN_SLUG}_jrc_population_risk_metrics.gpkg"
     script:
