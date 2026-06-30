@@ -52,3 +52,4 @@ include: "rules/analyze/adaptation_costs.smk"
 include: "rules/analyze/paper_bulk_analysis.smk"
 
 include: "rules/national_tool/wealth_quintiles.smk"
+include: "rules/national_tool/metric_summary.smk"
