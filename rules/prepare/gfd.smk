@@ -25,7 +25,7 @@ rule merge_gfd:
     """
     input:
         merge_inland_gfd_folder="data/inputs/gfd/prep/inland/",
-        merge_coastal_gdf_folder="data/inputs/gfd/prep/coastal/"
+        merge_coastal_gfd_folder="data/inputs/gfd/prep/coastal/"
     output:
         merge_inland_gfd_file="data/inputs/gfd/merged/gfd_inland.tif",
         merge_coastal_gfd_file="data/inputs/gfd/merged/gfd_coastal.tif"
