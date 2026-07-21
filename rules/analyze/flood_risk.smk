@@ -441,6 +441,30 @@ Test with
 snakemake -c1 data/results/flood_risk/countries/KEN/KEN_wri-flood-risk_adapted_AAR_V-JRC_dp.tif
 """
 
+rule deltares-coastal_average_annual_risk:
+    """
+    This rule calculates one layer (average annual relative risk) given a set of 
+    Deltares coastal return period flood maps. 
+    """
+    input:
+        flood_rp_2="data/results/flood_risk/countries/{ISO3}/{ISO3}_deltares-coastal-flood-risk_RP2_V-{VULN_CURVE}.tif",
+        flood_rp_5="data/results/flood_risk/countries/{ISO3}/{ISO3}_deltares-coastal-flood-risk_RP5_V-{VULN_CURVE}.tif",
+        flood_rp_10="data/results/flood_risk/countries/{ISO3}/{ISO3}_deltares-coastal-flood-risk_RP10_V-{VULN_CURVE}.tif",
+        flood_rp_25="data/results/flood_risk/countries/{ISO3}/{ISO3}_deltares-coastal-flood-risk_RP25_V-{VULN_CURVE}.tif",
+        flood_rp_50="data/results/flood_risk/countries/{ISO3}/{ISO3}_deltares-coastal-flood-risk_RP50_V-{VULN_CURVE}.tif",
+        flood_rp_100="data/results/flood_risk/countries/{ISO3}/{ISO3}_deltares-coastal-flood-risk_RP100_V-{VULN_CURVE}.tif",
+        flood_rp_250="data/results/flood_risk/countries/{ISO3}/{ISO3}_deltares-coastal-flood-risk_RP250_V-{VULN_CURVE}.tif",
+    output:
+        flood_aar="data/results/flood_risk/countries/{ISO3}/{ISO3}_deltares-coastal-flood-risk_AAR_V-{VULN_CURVE}.tif"
+    wildcard_constraints:
+        VULN_CURVE="BER|JRC|EXP|NRES|INFR",
+    script:
+        "./deltares-coastal_average_annual_risk.py"
+"""
+Test with
+snakemake -c1 data/results/flood_risk/countries/KEN/KEN_deltares-coastal-flood-risk_AAR_V-JRC.tif
+"""
+
 rule summarize_baseline_capital_stock_losses:
     """
     Rule summarizes capital stock losses per admin region
