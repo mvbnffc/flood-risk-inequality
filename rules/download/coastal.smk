@@ -1,4 +1,8 @@
 """
+Rulebook for downloading coastal flood data
+"""
+
+"""
 Download Deltares Coastal Flood Data
 
 References
@@ -43,3 +47,23 @@ rule deltares_nc_to_gtiff:
             NETCDF:"{input.nc}":inun \
             {output.tif}
         """
+
+"""
+Download WRI Global Coastal Flood Data
+
+References
+---------
+WRI: https://www.wri.org/data/aqueduct-floods-hazard-maps
+"""
+
+rule download_wri_coastal_flood:
+    output:
+        flood_file="data/inputs/flood/WRI/inuncoast_historical_nosub_hist_rp0{RP}.tif"
+    wildcard_constraints:
+        RP="0002|0005|0010|0025|0050|0100|0250|0500|1000"
+    shell:
+        """
+        mkdir -p $(dirname {output.flood_file})
+        wget -nc https://wri-projects.s3.amazonaws.com/AqueductFloodTool/download/v2/inuncoast_historical_nosub_hist_rp0{wildcards.RP}.tif -O {output.flood_file}
+        """
+
