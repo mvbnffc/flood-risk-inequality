@@ -8,7 +8,7 @@ rule clip_deltares_coastal_flood:
     """
     input:
         pop_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_ghs-pop.tif",
-        "data/inputs/flood/Deltares_coastal/Deltares_coastal_MERIT90m_2018_rp{RP}.tif"
+        "data/inputs/flood/Deltares_coastal/Deltares_coastal_MERIT90m_2018_rp{RP}.tif",
         raw_flood_file=lambda wc: (
             f"data/inputs/flood/Deltares_coastal/Deltares_coastal_MERIT90m_2018_rp{'%05d' % int(wc.RP)}.tif"
         ),
