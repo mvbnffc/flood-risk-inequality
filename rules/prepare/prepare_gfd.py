@@ -115,7 +115,7 @@ zipped_files = glob.glob(os.path.join(input_path, "*.zip"))
 for zipped_file in zipped_files:
     extract_files(zipped_file)
 
-logging.info("Loop over TIF files and converting NaNs - skipping those for specified in config folder.")
+logging.info("Loop over TIF files and converting NaNs - sorting into inland and coastal folders.")
 # Splitting GFD ID's into coastal and inland
 coastal_files = []
 inland_files = []
