@@ -64,6 +64,6 @@ rule download_wri_coastal_flood:
     shell:
         """
         mkdir -p $(dirname {output.flood_file})
-        wget -nc https://wri-projects.s3.amazonaws.com/AqueductFloodTool/download/v2/inuncoast_historical_nosub_hist_rp0{wildcards.RP}.tif -O {output.flood_file}
+        wget -nc https://aqueduct.wridata.org/AqueductFloods20/inuncoast_historical_nosub_hist_rp0{wildcards.RP}.tif -O {output.flood_file}
         """
 

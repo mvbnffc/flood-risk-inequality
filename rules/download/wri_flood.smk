@@ -14,5 +14,5 @@ rule download_wri_flood:
     shell:
         """
         mkdir -p $(dirname {output.flood_file})
-        wget -nc https://wri-projects.s3.amazonaws.com/AqueductFloodTool/download/v2/inunriver_historical_000000000WATCH_1980_rp0{wildcards.RP}.tif -O {output.flood_file}
+        wget -nc https://aqueduct.wridata.org/AqueductFloods20/inunriver_historical_000000000WATCH_1980_rp0{wildcards.RP}.tif -O {output.flood_file}
         """
