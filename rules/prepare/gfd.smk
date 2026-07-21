@@ -9,13 +9,13 @@ rule prepare_gfd_merge:
     """
     This rule extracts the relevant GFD raster bands (flood occurance and permanent water)
     and converts NaN values to zero - which prepares the files for a global merge.
-    It also filters the relevant GFD maps and removes any caused by dam outburts 
-    and storm surge flooding (as we are focussed on inland)
+    It also filters the relevant GFD maps and sorts them by inland or coastal. 
     """
     input:
         raw_gfd_folder="data/inputs/gfd/raw/"
     output:
-        merge_gfd_folder=directory("data/inputs/gfd/prep/")
+        merge_inland_gfd_folder=directory("data/inputs/gfd/prep/inland/"),
+        merge_coastal_gfd_folder=directory("data/inputs/gfd/prep/coastal/")
     script:
         "./prepare_gfd.py"
 

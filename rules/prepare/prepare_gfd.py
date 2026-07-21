@@ -15,7 +15,8 @@ import zipfile
 if __name__ == "__main__":
     try:
         input_path: str = snakemake.input["raw_gfd_folder"]
-        output_path: str = snakemake.output["merge_gfd_folder"]
+        inland_output_path: str = snakemake.output["merge_inland_gfd_folder"]
+        coastal_output_path: str = snakemake.output["merge_coastal_gfd_folder"]
     except:
         raise ValueError("Must be run via snakemake.")
 
@@ -80,8 +81,10 @@ def process_raster(file, output_folder):
         with rasterio.open(output_file, 'w', driver='GTiff', height=raster.shape[0], width=raster.shape[1], count=1, dtype=raster.dtype, crs=src.crs, transform=src.transform, compress='lzw') as dst:
             dst.write(raster, 1)
 
-logging.info("Creating output directory (if it doesn't already exist)")
-os.makedirs(output_path, exist_ok=True)
+logging.info("Creating output directories (if they don't already exist)")
+os.makedirs(inland_output_path, exist_ok=True)
+os.makedirs(coastal_output_path, exist_ok=True)
+
 
 logging.info("Extract the rasters (and JSON files) from the zipped folder.")
 zipped_files = glob.glob(os.path.join(input_path, "*.zip"))
@@ -89,26 +92,39 @@ for zipped_file in zipped_files:
     extract_files(zipped_file)
 
 logging.info("Loop over TIF files and converting NaNs - skipping those for specified in config folder.")
-# Finding GFD IDs to skip (those associated with dambreak or coastal flooding)
+# Splitting GFD ID's into coastal and inland
+coastal_files = []
+inland_files = []
 skip_files = []
-with open("config/gfd_ignore.txt", "r") as f:
+with open("config/gfd_inland.txt", "r") as f:
     for line in f.readlines():
-        skip_files.append(line.strip())
+        inland_files.append(line.strip())
+with open("config/gfd_coastal.txt", "r") as f:
+    for line in f.readlines():
+        coastal_files.append(line.strip())
 tif_files = glob.glob(os.path.join(input_path, "unzipped", "*.tif"))
 json_files = glob.glob(os.path.join(input_path, "unzipped", "*.json"))
 
 for file in tif_files:
-    if not any(skip_id in os.path.basename(file) for skip_id in skip_files):
-        process_raster(file, output_path)
+    if any(inland_id in os.path.basename(file) for inland_id in inland_files):
+        process_raster(file, inland_output_path)
+    if any(coastal_id in os.path.basename(file) for coastal_id in coastal_files):
+        process_raster(file, coastal_output_path)
 
 logging.info("Copying relevant JSON files.")
 # Create json folder
-os.makedirs(os.path.join(output_path, "json"), exist_ok=True)
+os.makedirs(os.path.join(inland_output_path, "json"), exist_ok=True)
+os.makedirs(os.path.join(coastal_output_path, "json"), exist_ok=True)
 # Also want to extract the JSON files.
 for file in json_files:
-    if not any(skip_id in os.path.basename(file) for skip_id in skip_files):
+    if any (inland_id in os.path.basename(file) for inland_id in inland_files):
         with open(file, 'r') as json_in:
-            json_out_path = os.path.join(output_path, "json", os.path.basename(file))
+            json_out_path = os.path.join(inland_output_path, "json", os.path.basename(file))
+            with open(json_out_path, 'w') as json_out:
+                json_out.write(json_in.read())
+    if any (coastal_id in os.path.basename(file) for coastal_id in coastal_files):
+        with open(file, 'r') as json_in:
+            json_out_path = os.path.join(coastal_output_path, "json", os.path.basename(file))
             with open(json_out_path, 'w') as json_out:
                 json_out.write(json_in.read())
 
