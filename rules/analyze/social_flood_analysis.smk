@@ -22,7 +22,7 @@ rule inequality_metrics:
     output:
         regional_CI = "data/results/social_flood/countries/{ISO3}/inequality_metrics/{ISO3}_{ADMIN_SLUG}_metrics_{MODEL}-flood_{TYPE}_V-{VULN_CURVE}_S-{SOCIAL}.gpkg",
     wildcard_constraints:
-        MODEL="giri|jrc|wri",
+        MODEL="giri|jrc|wri|deltares-coastal",
         TYPE="AAR|RP100",
         SOCIAL="rwi|gdp",
         VULN_CURVE="BER|JRC|EXP",
@@ -51,7 +51,7 @@ rule inequality_metrics_decomposed:
     output:
         regional_CI = "data/results/social_flood/countries/{ISO3}/inequality_metrics/{ISO3}_{ADMIN_SLUG}_decomposed_metrics_{MODEL}-flood_{TYPE}_V-{VULN_CURVE}_S-{SOCIAL}.gpkg",
     wildcard_constraints:
-        MODEL="giri|jrc|wri",
+        MODEL="giri|jrc|wri|deltares-coastal",
         TYPE="AAR|RP100",
         SOCIAL="rwi|gdp",
         VULN_CURVE="BER|JRC|EXP",
@@ -79,7 +79,7 @@ rule inequality_metrics_protected:
     output:
         regional_CI = "data/results/social_flood/countries/{ISO3}/inequality_metrics/{ISO3}_{ADMIN_SLUG}_metrics_{MODEL}-flood_protected_AAR_V-{VULN_CURVE}_S-{SOCIAL}.gpkg",
     wildcard_constraints:
-        MODEL="giri|jrc|wri",
+        MODEL="giri|jrc|wri|deltares-coastal",
         VULN_CURVE="BER|JRC|EXP",
         SOCIAL="rwi|gdp",
         ADMIN_SLUG="ADM0|ADM1|ADM2"
@@ -107,7 +107,7 @@ rule inequality_metrics_protected_decomposed:
     output:
         regional_CI = "data/results/social_flood/countries/{ISO3}/inequality_metrics/{ISO3}_{ADMIN_SLUG}_decomposed_metrics_{MODEL}-flood_protected_AAR_V-{VULN_CURVE}_S-{SOCIAL}.gpkg",
     wildcard_constraints:
-        MODEL="giri|jrc|wri",
+        MODEL="giri|jrc|wri|deltares-coastal",
         VULN_CURVE="BER|JRC|EXP",
         SOCIAL="rwi|gdp",
         ADMIN_SLUG="ADM0|ADM1|ADM2"
@@ -134,7 +134,7 @@ rule inequality_metrics_admin_decomposed:
     output:
         regional_CI = "data/results/social_flood/countries/{ISO3}/inequality_metrics/{ISO3}_{ADMIN_SLUG}_admin-decomposed_metrics_{MODEL}-flood_protected_AAR_V-{VULN_CURVE}_S-{SOCIAL}.gpkg",
     wildcard_constraints:
-        MODEL="giri|jrc|wri",
+        MODEL="giri|jrc|wri|deltares-coastal",
         VULN_CURVE="BER|JRC|EXP",
         SOCIAL="rwi|gdp",
         ADMIN_SLUG="ADM1|ADM2"
