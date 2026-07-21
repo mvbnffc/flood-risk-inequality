@@ -441,7 +441,7 @@ Test with
 snakemake -c1 data/results/flood_risk/countries/KEN/KEN_wri-flood-risk_adapted_AAR_V-JRC_dp.tif
 """
 
-rule deltares-coastal_average_annual_risk:
+rule deltares_coastal_average_annual_risk:
     """
     This rule calculates one layer (average annual relative risk) given a set of 
     Deltares coastal return period flood maps. 
