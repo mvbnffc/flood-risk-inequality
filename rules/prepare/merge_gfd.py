@@ -98,7 +98,7 @@ for file in tqdm(inland_raster_files, desc='Inland GFD maps'):
     with rasterio.open(file) as src:
         row_offset, col_offset = calculate_offsets(src.bounds, inland_global_extent, src.transform)
         pad_and_add_raster(src, inland_global_raster, row_offset, col_offset, inland_global_extent, src.transform)
-or file in tqdm(coastal_raster_files, desc='Coastal GFD maps'):
+for file in tqdm(coastal_raster_files, desc='Coastal GFD maps'):
     with rasterio.open(file) as src:
         row_offset, col_offset = calculate_offsets(src.bounds, coastal_global_extent, src.transform)
         pad_and_add_raster(src, coastal_global_raster, row_offset, col_offset, coastal_global_extent, src.transform)
