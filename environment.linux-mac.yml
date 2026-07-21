@@ -44,6 +44,7 @@ dependencies:
   - openpyxl
   - jq
   - osmium-tool
+  - gsutil
 
   # If you need any pip-only bits
   - pip:
