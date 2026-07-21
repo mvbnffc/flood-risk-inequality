@@ -7,6 +7,7 @@ import logging
 import sys
 import glob
 import os
+import shutil
 
 import numpy as np
 import rasterio
@@ -26,13 +27,21 @@ logging.info(f"Preparing the Global Flood Database maps for a global merge.")
 
 #### Define functions for the analysis ####
 def extract_files(zip_path):
-    # Create unzip folder (if it doesn't already exist)
-    os.makedirs(os.path.join(input_path, "unzipped"), exist_ok=True)
+    """Extract the first TIFF and JSON file from a ZIP without loading them into memory."""
+    unzip_folder = os.path.join(input_path, "unzipped")
+    os.makedirs(unzip_folder, exist_ok=True)
 
-    with zipfile.ZipFile(zip_path, 'r') as zf:
-        # List all files that end with .tif
-        tif_files = [f for f in zf.namelist() if f.lower().endswith('.tif')]
-        json_files = [f for f in zf.namelist() if f.lower().endswith('.json')]
+    logging.info(f"Opening ZIP: {zip_path}")
+
+    with zipfile.ZipFile(zip_path, "r") as zf:
+        tif_files = [
+            file for file in zf.namelist()
+            if file.lower().endswith(".tif")
+        ]
+        json_files = [
+            file for file in zf.namelist()
+            if file.lower().endswith(".json")
+        ]
 
         if not tif_files:
             raise ValueError(f"No TIFF file found in {zip_path}")
@@ -41,15 +50,30 @@ def extract_files(zip_path):
 
         tif_file = tif_files[0]
         json_file = json_files[0]
-        output_tif = os.path.join(os.path.join(input_path, "unzipped"), os.path.basename(tif_file))
-        output_json = os.path.join(os.path.join(input_path, "unzipped"), os.path.basename(json_file))
 
-        # Extract the TIFF file's content and write it to output file
-        with open(output_tif, 'wb') as tif_out:
-            tif_out.write(zf.read(tif_file))
-        # Extract the TIFF file's content and write it to output file
-        with open(output_json, 'wb') as json_out:
-            json_out.write(zf.read(json_file))
+        output_tif = os.path.join(
+            unzip_folder,
+            os.path.basename(tif_file),
+        )
+        output_json = os.path.join(
+            unzip_folder,
+            os.path.basename(json_file),
+        )
+
+        logging.info(
+            f"Extracting {tif_file} "
+            f"({zf.getinfo(tif_file).file_size / 1024**3:.2f} GB)"
+        )
+
+        with zf.open(tif_file, "r") as src, open(output_tif, "wb") as dst:
+            shutil.copyfileobj(src, dst, length=16 * 1024 * 1024)
+
+        logging.info(f"Extracting {json_file}")
+
+        with zf.open(json_file, "r") as src, open(output_json, "wb") as dst:
+            shutil.copyfileobj(src, dst)
+
+        logging.info(f"Finished extracting {zip_path}")
 
 def shorten_filename(file_path):
     """
