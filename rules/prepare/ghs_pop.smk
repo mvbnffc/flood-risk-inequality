@@ -7,10 +7,12 @@ rule clip_ghs_pop:
     Clip GHS-POP raster to country boundary. 
     """
     input:
-        raw_pop_file="data/inputs/ghs-pop/GHS_POP_E2020_GLOBE_R2023A_4326_3ss_V1_0.tif",
+        raw_pop_file="data/inputs/ghs-pop/GHS_POP_E{YEAR}_GLOBE_R2023A_4326_3ss_V1_0.tif",
         boundary_file="data/inputs/boundaries/{ISO3}/geobounds_{ISO3}.geojson",
     output:
-        trimmed_pop_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_ghs-pop.tif",
+        trimmed_pop_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_ghs-pop_{YEAR}.tif",
+    wildcard_constraints:
+        YEAR="2000|2005|2010|2015|2020|"
     shell:
         """
         set -ex
@@ -31,5 +33,5 @@ rule clip_ghs_pop:
         """
 """ 
 Test with
-snakemake -c1 data/inputs/analysis/KEN/KEN_ghs-pop.tif
+snakemake -c1 data/inputs/analysis/KEN/KEN_ghs-pop_2020.tif
 """
