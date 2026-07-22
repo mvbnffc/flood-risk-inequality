@@ -1,13 +1,5 @@
 """
-Script for creating a merged raster of the Google historical inundation datasets
-
-Raw data comes in km^2 GeoJSON tiles classfied as high, medium, and low risk:
-    High: wet at least 5% of the time
-    Medium: wet at least 1% of the time
-    Low: wet at least 0.5% of the time
-
-This script merges the GeoJSONs into one global (km^2 resolution) GeoTiff with cell values
-corresponding to the probability of flooding in each grid cell (high=0.05, medium=0.01, low=0.005)
+Script for creating a merged raster of the Global Flood Databse - for inland and coastal flooding.
 """
 
 import logging
@@ -83,11 +75,11 @@ coastal_raster_files = glob.glob(os.path.join(coastal_input_path, "*.tif"))
 
 logging.info("Calculate global extents.")
 inland_global_extent = get_global_extent(inland_raster_files)
-inland_global_width = int((inland_global_extent[2] - inland_global_extent[0]) / raster_resolution)
-inland_global_height = int((inland_global_extent[3] - inland_global_extent[1]) / raster_resolution)
+inland_global_width = int(np.ceil((inland_global_extent[2] - inland_global_extent[0])) / raster_resolution)
+inland_global_height = int(np.ceil((inland_global_extent[3] - inland_global_extent[1])) / raster_resolution)
 coastal_global_extent = get_global_extent(coastal_raster_files)
-coastal_global_width = int((coastal_global_extent[2] - coastal_global_extent[0]) / raster_resolution)
-coastal_global_height = int((coastal_global_extent[3] - coastal_global_extent[1]) / raster_resolution)
+coastal_global_width = int(np.ceil((coastal_global_extent[2] - coastal_global_extent[0])) / raster_resolution)
+coastal_global_height = int(np.ceil((coastal_global_extent[3] - coastal_global_extent[1])) / raster_resolution)
 
 logging.info("Initialize the global rasters")
 inland_global_raster = np.zeros((inland_global_height, inland_global_width), dtype=np.int16)
