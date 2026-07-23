@@ -53,7 +53,7 @@ rule clip_gfd:
     input:
         raw_flood_file="data/inputs/gfd/merged/gfd_{YEAR}_{TYPE}.tif",
         boundary_file="data/inputs/boundaries/{ISO3}/geobounds_{ISO3}.geojson",
-        pop_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_ghs-pop.tif",
+        pop_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_ghs-pop_2020.tif",
     output:
         trimmed_flood_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_gfd_{YEAR}_{TYPE}-flood.tif",
     wildcard_constraints:
