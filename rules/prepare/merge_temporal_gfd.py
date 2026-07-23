@@ -86,7 +86,7 @@ with open(f"config/gfd_{epoch}.txt", "r") as f:
 
 logging.info(f"Processing {len(gfd_ids)} rasters and merging into global raster.")
 for file in tqdm(raster_files):
-    if any(gfd_ids in os.path.basename(file) for annual_id in annual_dict[i]):
+    if any(gfd_id in os.path.basename(file) for gf_id in gf_ids):
         with rasterio.open(file) as src:
             row_offset, col_offset = calculate_offsets(src.bounds, global_extent, src.transform)
             pad_and_add_raster(src, global_raster, row_offset, col_offset, global_extent, src.transform)
