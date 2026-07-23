@@ -445,3 +445,33 @@ rule dfo_event_analysis:
 Test with
 snakemake -c1 data/results/social_flood/events/DFO_1595/DFO_1595_results.csv
 """
+
+
+"""
+Bulk run temporal observed floods.
+"""
+
+configfile: "config/config.yaml"
+
+FLOOD_YEARS = [str(year) for year in range(2000, 2019)]
+
+POP_YEAR_BY_FLOOD_YEAR = {
+    year: year if int(year) % 5 == 0 else f"interpolated-{year}"
+    for year in FLOOD_YEARS
+}
+
+TEMPORAL_INEQUALITY_TARGETS = [
+    (
+        f"data/results/social_flood/countries/{iso3}/inequality_metrics/"
+        f"{iso3}_ADM0_metrics_gfd_{flood_year}_{flood_type}-flood_"
+        f"S-rwi_P-{POP_YEAR_BY_FLOOD_YEAR[flood_year]}.gpkg"
+    )
+    for iso3 in config["iso_codes"]
+    for flood_type in ["coastal", "inland"]
+    for flood_year in FLOOD_YEARS
+]
+
+
+rule inequality_metrics_observed_temporal:
+    input:
+        TEMPORAL_INEQUALITY_TARGETS
