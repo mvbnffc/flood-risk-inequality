@@ -24,11 +24,11 @@ rule merge_gfd:
     This rule merges GFD rasters into one global file
     """
     input:
-        merge_inland_gfd_folder="data/inputs/gfd/prep/inland/",
-        merge_coastal_gfd_folder="data/inputs/gfd/prep/coastal/"
+        merge_gfd_folder="data/inputs/gfd/prep/{TYPE}/"
     output:
-        merge_inland_gfd_file="data/inputs/gfd/merged/gfd_inland.tif",
-        merge_coastal_gfd_file="data/inputs/gfd/merged/gfd_coastal.tif"
+        merge_gfd_file="data/inputs/gfd/merged/gfd_all_{TYPE}.tif"
+    wildcard_constraints:
+        TYPE="inland|coastal"
     script:
         "./merge_gfd.py"
 
@@ -37,48 +37,12 @@ rule merge_temporal_gfd:
     This rule merges GFD rasters into annual files for coastal and inland flooding
     """
     input:
-        merge_inland_gfd_folder="data/inputs/gfd/prep/inland/",
-        merge_coastal_gfd_folder="data/inputs/gfd/prep/coastal/"
+        merge_gfd_folder="data/inputs/gfd/prep/{TYPE}/"
     output:
-        merge_inland_2000_gfd_file="data/inputs/gfd/merged/gfd_2000_inland.tif",
-        merge_inland_2001_gfd_file="data/inputs/gfd/merged/gfd_2001_inland.tif",
-        merge_inland_2002_gfd_file="data/inputs/gfd/merged/gfd_2002_inland.tif",
-        merge_inland_2003_gfd_file="data/inputs/gfd/merged/gfd_2003_inland.tif",
-        merge_inland_2004_gfd_file="data/inputs/gfd/merged/gfd_2004_inland.tif",
-        merge_inland_2005_gfd_file="data/inputs/gfd/merged/gfd_2005_inland.tif",
-        merge_inland_2006_gfd_file="data/inputs/gfd/merged/gfd_2006_inland.tif",
-        merge_inland_2007_gfd_file="data/inputs/gfd/merged/gfd_2007_inland.tif",
-        merge_inland_2008_gfd_file="data/inputs/gfd/merged/gfd_2008_inland.tif",
-        merge_inland_2009_gfd_file="data/inputs/gfd/merged/gfd_2009_inland.tif",
-        merge_inland_2010_gfd_file="data/inputs/gfd/merged/gfd_2010_inland.tif",
-        merge_inland_2011_gfd_file="data/inputs/gfd/merged/gfd_2011_inland.tif",
-        merge_inland_2012_gfd_file="data/inputs/gfd/merged/gfd_2012_inland.tif",
-        merge_inland_2013_gfd_file="data/inputs/gfd/merged/gfd_2013_inland.tif",
-        merge_inland_2014_gfd_file="data/inputs/gfd/merged/gfd_2014_inland.tif",
-        merge_inland_2015_gfd_file="data/inputs/gfd/merged/gfd_2015_inland.tif",
-        merge_inland_2016_gfd_file="data/inputs/gfd/merged/gfd_2016_inland.tif",
-        merge_inland_2017_gfd_file="data/inputs/gfd/merged/gfd_2017_inland.tif",
-        merge_inland_2018_gfd_file="data/inputs/gfd/merged/gfd_2018_inland.tif",
-        merge_coastal_2000_gfd_file="data/inputs/gfd/merged/gfd_2000_coastal.tif",
-        merge_coastal_2001_gfd_file="data/inputs/gfd/merged/gfd_2001_coastal.tif",
-        merge_coastal_2002_gfd_file="data/inputs/gfd/merged/gfd_2002_coastal.tif",
-        merge_coastal_2003_gfd_file="data/inputs/gfd/merged/gfd_2003_coastal.tif",
-        merge_coastal_2004_gfd_file="data/inputs/gfd/merged/gfd_2004_coastal.tif",
-        merge_coastal_2005_gfd_file="data/inputs/gfd/merged/gfd_2005_coastal.tif",
-        merge_coastal_2006_gfd_file="data/inputs/gfd/merged/gfd_2006_coastal.tif",
-        merge_coastal_2007_gfd_file="data/inputs/gfd/merged/gfd_2007_coastal.tif",
-        merge_coastal_2008_gfd_file="data/inputs/gfd/merged/gfd_2008_coastal.tif",
-        merge_coastal_2009_gfd_file="data/inputs/gfd/merged/gfd_2009_coastal.tif",
-        merge_coastal_2010_gfd_file="data/inputs/gfd/merged/gfd_2010_coastal.tif",
-        merge_coastal_2011_gfd_file="data/inputs/gfd/merged/gfd_2011_coastal.tif",
-        merge_coastal_2012_gfd_file="data/inputs/gfd/merged/gfd_2012_coastal.tif",
-        merge_coastal_2013_gfd_file="data/inputs/gfd/merged/gfd_2013_coastal.tif",
-        merge_coastal_2014_gfd_file="data/inputs/gfd/merged/gfd_2014_coastal.tif",
-        merge_coastal_2015_gfd_file="data/inputs/gfd/merged/gfd_2015_coastal.tif",
-        merge_coastal_2016_gfd_file="data/inputs/gfd/merged/gfd_2016_coastal.tif",
-        merge_coastal_2017_gfd_file="data/inputs/gfd/merged/gfd_2017_coastal.tif",
-        merge_coastal_2018_gfd_file="data/inputs/gfd/merged/gfd_2018_coastal.tif"
-
+        merge_temporal_gfd_file="data/inputs/gfd/merged/gfd_{YEAR}_{TYPE}.tif"
+    wildcard_constraints:
+        TYPE="inland|coastal",
+        YEAR="2000|2001|2002|2003|2004|2005|2006|2007|2008|2009|2010|2011|2012|2013|2014|2015|2016|2017|2018"
     script:
         "./merge_temporal_gfd.py"
 
@@ -87,11 +51,14 @@ rule clip_gfd:
     Clip GFD flood raster to country boundary.
     """
     input:
-        raw_flood_file="data/inputs/gfd/merged/gfd.tif",
+        raw_flood_file="data/inputs/gfd/merged/gfd_{YEAR}_{TYPE}.tif",
         boundary_file="data/inputs/boundaries/{ISO3}/geobounds_{ISO3}.geojson",
         pop_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_ghs-pop.tif",
     output:
-        trimmed_flood_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_gfd-flood.tif",
+        trimmed_flood_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_gfd_{YEAR}_{TYPE}-flood.tif",
+    wildcard_constraints:
+        TYPE="inland|coastal",
+        YEAR="all|2000|2001|2002|2003|2004|2005|2006|2007|2008|2009|2010|2011|2012|2013|2014|2015|2016|2017|2018"
     shell:
         """
         set -ex
