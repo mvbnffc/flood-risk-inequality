@@ -331,7 +331,10 @@ rule inequality_metrics_observed:
     wildcard_constraints:
         TYPE="coastal|inland",
         FLOOD_YEAR="all|2000|2001|2002|2003|2004|2005|2006|2007|2008|2009|2010|2011|2012|2013|2014|2015|2016|2017|2018",
-        POP_YEAR="2000|2005|2010|2015|2020",
+        POP_YEAR="2000|interpolated-2001|interpolated-2002|interpolated-2003|interpolated-2004|"
+                 "2005|interpolated-2006|interpolated-2007|interpolated-2008|interpolated-2009|"
+                 "2010|interpolated-2011|interpolated-2012|interpolated-2013|interpolated-2014|"
+                 "2015|interpolated-2016|interpolated-2017|interpolated-2018|2020",
         MODEL="gfd",
         SOCIAL="rwi|gdp",
         ADMIN_SLUG="ADM0|ADM1|ADM2"
@@ -339,7 +342,7 @@ rule inequality_metrics_observed:
         "./inequality_metrics.py"
 """
 Test with
-snakemake -c1 data/results/social_flood/countries/KEN/inequality_metrics/KEN_ADM0_metrics_gfd-flood_S-rwi.gpkg
+snakemake -c1 data/results/social_flood/countries/KEN/inequality_metrics/KEN_ADM0_metrics_gfd_all_coastal-flood_S-rwi_P-2015.gpkg
 """
 
 rule inequality_metrics_observed_decomposed:
