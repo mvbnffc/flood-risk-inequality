@@ -31,7 +31,7 @@ rule clip_surface_water:
     input:
         surface_water_vrt="data/inputs/jrc-perm/merged/surface_water.vrt",
         boundary_file="data/inputs/boundaries/{ISO3}/geobounds_{ISO3}.geojson",
-        pop_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_ghs-pop.tif",
+        pop_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_ghs-pop_2020.tif",
     output:
         surface_water_clipped="data/inputs/analysis/countries/{ISO3}/{ISO3}_surface_water.tif"
     shell:
