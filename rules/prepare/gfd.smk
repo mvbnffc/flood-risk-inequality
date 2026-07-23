@@ -81,7 +81,7 @@ rule clip_gfd:
         """
 """ 
 Test with
-snakemake -c1 data/inputs/analysis/countries/KEN/KEN_gfd-flood.tif
+snakemake -c1 data/inputs/analysis/countries/KEN/KEN_gfd_all_coastal-flood.tif
 """
 
 rule clip_gfd_event:

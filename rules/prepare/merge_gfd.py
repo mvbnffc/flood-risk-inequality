@@ -92,7 +92,7 @@ with rasterio.open(output_path,
                    width=global_width,
                    height=global_height,
                    count=1,
-                   dtype=lobal_raster.dtype,
+                   dtype=global_raster.dtype,
                    crs=src.crs,
                    transform=rasterio.transform.from_origin(global_extent[0], global_extent[3], raster_resolution, raster_resolution)
                    ) as dst:
