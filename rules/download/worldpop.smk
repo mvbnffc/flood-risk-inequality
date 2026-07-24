@@ -12,11 +12,11 @@ rule download_wp_demographics:
     params:
         url=lambda wildcards: (
             "https://data.worldpop.org/GIS/AgeSex_structures/Global_2015_2030/"
-            f"R2025A/2015/{wildcards.ISO3}/v1/100m/"
-            f"{wildcards.ISO3.lower()}_agesex_structures_2015_CN_100m_R2025A_v1.zip"
+            f"R2025A/2025/{wildcards.ISO3}/v1/100m/"
+            f"{wildcards.ISO3.lower()}_agesex_structures_2025_CN_100m_R2025A_v1.zip"
         ),
         zip_name=lambda wildcards: (
-            f"{wildcards.ISO3.lower()}_agesex_structures_2015_CN_100m_R2025A_v1.zip"
+            f"{wildcards.ISO3.lower()}_agesex_structures_2025_CN_100m_R2025A_v1.zip"
         )
     shell:
         """
