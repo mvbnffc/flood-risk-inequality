@@ -1,5 +1,6 @@
 """
-This script creates a population wealth quintile map for plotting / mapping.
+This script creates population RWI assignment and wealth quintile maps for
+plotting / mapping.
 
 Where populated cells do not overlap a valid RWI cell, the script assigns
 those cells the population-weighted average RWI of their ADM2 region.
@@ -23,7 +24,8 @@ if __name__ == "__main__":
         admin_path: str = snakemake.input["boundary_file"]
         pop_path: str = snakemake.input["pop_file"]
         rwi_path: str = snakemake.input["rwi_file"]
-        output_path: str = snakemake.output["wealth_quintiles"]
+        quintile_path: str = snakemake.output["wealth_quintiles"]
+        pop_rwi_path: str = snakemake.output["pop_rwi_assignment"]
         country: str = snakemake.wildcards.ISO3
     except NameError:
         raise ValueError("Must be run via snakemake.")
@@ -168,20 +170,21 @@ for admin_id in admin_ids_with_missing_rwi:
     rwi_filled[admin_missing_mask] = admin_mean_rwi
     filled_cell_count += int(admin_missing_mask.sum())
 
-logging.info(f"Filled missing RWI cells using unweighted {layer_name} means: {filled_cell_count}")
-logging.info(f"Filled missing RWI cells using national fallback: {national_fallback_cell_count}")
-
-
 logging.info("Handling populated missing-RWI cells outside rasterised admin areas.")
 
 outside_admin_missing_mask = missing_rwi_pop_mask & (admin_raster == 0)
 
 if outside_admin_missing_mask.sum() > 0:
     logging.warning(
-    f"{outside_admin_missing_mask.sum()} populated cells with missing RWI "
-    f"fell outside rasterised {layer_name} boundaries. "
-    "Assigning national unweighted mean RWI."
-)
+        f"{outside_admin_missing_mask.sum()} populated cells with missing RWI "
+        f"fell outside rasterised {layer_name} boundaries. "
+        "Assigning national unweighted mean RWI."
+    )
+    rwi_filled[outside_admin_missing_mask] = national_rwi_mean
+    national_fallback_cell_count += int(outside_admin_missing_mask.sum())
+
+logging.info(f"Filled missing RWI cells using unweighted {layer_name} means: {filled_cell_count}")
+logging.info(f"Filled missing RWI cells using national fallback: {national_fallback_cell_count}")
 
 
 logging.info("Calculating population-weighted national RWI quintile thresholds.")
@@ -239,7 +242,26 @@ quintile_map[
 
 
 logging.info("Writing wealth quintile raster.")
-with rasterio.open(output_path, "w", **profile) as dst:
+with rasterio.open(quintile_path, "w", **profile) as dst:
     dst.write(quintile_map, 1)
+
+logging.info("Writing population RWI assignment raster.")
+
+rwi_output_nodata = (
+    float(rwi_nodata)
+    if rwi_nodata is not None and np.isfinite(rwi_nodata)
+    else np.nan
+)
+rwi_assignment = np.full(pop_shape, rwi_output_nodata, dtype=np.float32)
+rwi_assignment[valid_pop_mask] = rwi_filled[valid_pop_mask]
+
+rwi_profile = profile.copy()
+rwi_profile.update(
+    dtype=rasterio.float32,
+    nodata=rwi_output_nodata,
+)
+
+with rasterio.open(pop_rwi_path, "w", **rwi_profile) as dst:
+    dst.write(rwi_assignment, 1)
 
 logging.info("Done.")
