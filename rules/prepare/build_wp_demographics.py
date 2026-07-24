@@ -10,7 +10,7 @@ are spatially aligned.
 
 The input WorldPop rasters are expected to follow the naming convention:
 
-{iso}_{gender}_{age_group}_2015_CN_100m_R2025A_v1.tif
+{iso}_{gender}_{age_group}_2025_CN_100m_R2025A_v1.tif
 
 where the ISO3 code is lower case in the filename, while the Snakemake
 wildcard ISO3 is upper case.
@@ -80,7 +80,7 @@ def get_worldpop_path(
     """
 
     filename = (
-        f"{iso3.lower()}_{gender}_{age_group}_2015_CN_"
+        f"{iso3.lower()}_{gender}_{age_group}_2025_CN_"
         f"100m_R2025A_v1.tif"
     )
 
