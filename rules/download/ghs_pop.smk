@@ -18,7 +18,7 @@ rule download_ghsl:
 
         mkdir -p $output_dir
 
-        wget -nc https://jeodpp.jrc.ec.europa.eu/ftp/jrc-opendata/GHSL/GHS_POP_GLOBE_R2023A/GHS_POP_E{wildcards.YEAR}_GLOBE_R2023A_4326_{wildcards.RESOLUTION}/V1-0/GHS_POP_E2020_GLOBE_R2023A_4326_{wildcards.RESOLUTION}_V1_0.zip \
+        wget -nc https://jeodpp.jrc.ec.europa.eu/ftp/jrc-opendata/GHSL/GHS_POP_GLOBE_R2023A/GHS_POP_E{wildcards.YEAR}_GLOBE_R2023A_4326_{wildcards.RESOLUTION}/V1-0/GHS_POP_E{wildcards.YEAR}_GLOBE_R2023A_4326_{wildcards.RESOLUTION}_V1_0.zip \
             --directory-prefix=$output_dir
 
         unzip -o $output_dir/GHS_POP_E{wildcards.YEAR}_GLOBE_R2023A_4326_{wildcards.RESOLUTION}_V1_0.zip \

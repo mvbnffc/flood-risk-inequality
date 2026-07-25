@@ -12,10 +12,9 @@ from tqdm import tqdm
 
 if __name__ == "__main__":
     try:
-        inland_input_path: str = snakemake.input["merge_inland_gfd_folder"]
-        coastal_input_path: str = snakemake.input["merge_coastal_gfd_folder"]
-        inland_output_path: str = snakemake.output["merge_inland_gfd_file"]
-        coastal_output_path: str = snakemake.output["merge_coastal_gfd_file"]
+        input_path: str = snakemake.input["merge_gfd_folder"]
+        output_path: str = snakemake.output["merge_gfd_file"]
+        flood_type: str = snakemake.wildcards["TYPE"]
     except:
         raise ValueError("Must be run via snakemake.")
     
@@ -24,7 +23,7 @@ raster_resolution = 0.002245788210298803843 # degrees
 
 logging.basicConfig(format="%(asctime)s %(process)d %(filename)s %(message)s", level=logging.INFO)
 
-logging.info(f"Merging Global Flood Database files into global raster.")
+logging.info(f"Merging Global Flood Database {flood_type} files into global raster.")
 
 #### Define functions for the analysis #####################
 def get_global_extent(files):
@@ -70,55 +69,34 @@ def pad_and_add_raster(src, global_raster, row_offset, col_offset, global_extent
 ###########################################################
 
 logging.info("Reading raster file names.")
-inland_raster_files = glob.glob(os.path.join(inland_input_path, "*.tif"))
-coastal_raster_files = glob.glob(os.path.join(coastal_input_path, "*.tif"))
+raster_files = glob.glob(os.path.join(input_path, "*.tif"))
 
-logging.info("Calculate global extents.")
-inland_global_extent = get_global_extent(inland_raster_files)
-inland_global_width = int(np.ceil((inland_global_extent[2] - inland_global_extent[0])) / raster_resolution)
-inland_global_height = int(np.ceil((inland_global_extent[3] - inland_global_extent[1])) / raster_resolution)
-coastal_global_extent = get_global_extent(coastal_raster_files)
-coastal_global_width = int(np.ceil((coastal_global_extent[2] - coastal_global_extent[0])) / raster_resolution)
-coastal_global_height = int(np.ceil((coastal_global_extent[3] - coastal_global_extent[1])) / raster_resolution)
+logging.info("Calculate global extent.")
+global_extent = get_global_extent(raster_files)
+global_width = int(np.ceil((global_extent[2] - global_extent[0])) / raster_resolution)
+global_height = int(np.ceil((global_extent[3] - global_extent[1])) / raster_resolution)
 
-logging.info("Initialize the global rasters")
-inland_global_raster = np.zeros((inland_global_height, inland_global_width), dtype=np.int16)
-coastal_global_raster = np.zeros((coastal_global_height, coastal_global_width), dtype=np.int16)
+logging.info("Initialize the global raster")
+global_raster = np.zeros((global_height, global_width), dtype=np.int16)
 
 logging.info("Processing rasters and merging into global raster.")
-for file in tqdm(inland_raster_files, desc='Inland GFD maps'):
+for file in tqdm(raster_files):
     with rasterio.open(file) as src:
-        row_offset, col_offset = calculate_offsets(src.bounds, inland_global_extent, src.transform)
-        pad_and_add_raster(src, inland_global_raster, row_offset, col_offset, inland_global_extent, src.transform)
-for file in tqdm(coastal_raster_files, desc='Coastal GFD maps'):
-    with rasterio.open(file) as src:
-        row_offset, col_offset = calculate_offsets(src.bounds, coastal_global_extent, src.transform)
-        pad_and_add_raster(src, coastal_global_raster, row_offset, col_offset, coastal_global_extent, src.transform)
-
+        row_offset, col_offset = calculate_offsets(src.bounds, global_extent, src.transform)
+        pad_and_add_raster(src, global_raster, row_offset, col_offset, global_extent, src.transform)
 
 logging.info("Save the global rasters.")
-with rasterio.open(inland_output_path,
+with rasterio.open(output_path,
                    'w',
                    driver='GTiff',
-                   width=inland_global_width,
-                   height=inland_global_height,
+                   width=global_width,
+                   height=global_height,
                    count=1,
-                   dtype=inland_global_raster.dtype,
+                   dtype=global_raster.dtype,
                    crs=src.crs,
-                   transform=rasterio.transform.from_origin(inland_global_extent[0], inland_global_extent[3], raster_resolution, raster_resolution)
+                   transform=rasterio.transform.from_origin(global_extent[0], global_extent[3], raster_resolution, raster_resolution)
                    ) as dst:
-    dst.write(inland_global_raster, 1)
-with rasterio.open(coastal_output_path,
-                   'w',
-                   driver='GTiff',
-                   width=coastal_global_width,
-                   height=coastal_global_height,
-                   count=1,
-                   dtype=coastal_global_raster.dtype,
-                   crs=src.crs,
-                   transform=rasterio.transform.from_origin(coastal_global_extent[0], coastal_global_extent[3], raster_resolution, raster_resolution)
-                   ) as dst:
-    dst.write(coastal_global_raster, 1)
+    dst.write(global_raster, 1)
 
 logging.info("Done.")
 

@@ -323,12 +323,18 @@ rule inequality_metrics_observed:
     input:
         admin_areas = "data/inputs/boundaries/{ISO3}/geobounds_{ISO3}.gpkg",
         social_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_{SOCIAL}.tif",
-        pop_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_ghs-pop.tif",
+        pop_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_ghs-pop_{POP_YEAR}.tif",
         mask_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_surface_water.tif",
-        risk_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_{MODEL}-flood.tif",
+        risk_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_{MODEL}_{FLOOD_YEAR}_{TYPE}-flood.tif",
     output:
-        regional_CI = "data/results/social_flood/countries/{ISO3}/inequality_metrics/{ISO3}_{ADMIN_SLUG}_metrics_{MODEL}-flood_S-{SOCIAL}.gpkg",
+        regional_CI = "data/results/social_flood/countries/{ISO3}/inequality_metrics/{ISO3}_{ADMIN_SLUG}_metrics_{MODEL}_{FLOOD_YEAR}_{TYPE}-flood_S-{SOCIAL}_P-{POP_YEAR}.gpkg",
     wildcard_constraints:
+        TYPE="coastal|inland",
+        FLOOD_YEAR="all|2000|2001|2002|2003|2004|2005|2006|2007|2008|2009|2010|2011|2012|2013|2014|2015|2016|2017|2018",
+        POP_YEAR="2000|interpolated-2001|interpolated-2002|interpolated-2003|interpolated-2004|"
+                 "2005|interpolated-2006|interpolated-2007|interpolated-2008|interpolated-2009|"
+                 "2010|interpolated-2011|interpolated-2012|interpolated-2013|interpolated-2014|"
+                 "2015|interpolated-2016|interpolated-2017|interpolated-2018|2020",
         MODEL="gfd",
         SOCIAL="rwi|gdp",
         ADMIN_SLUG="ADM0|ADM1|ADM2"
@@ -336,7 +342,7 @@ rule inequality_metrics_observed:
         "./inequality_metrics.py"
 """
 Test with
-snakemake -c1 data/results/social_flood/countries/KEN/inequality_metrics/KEN_ADM0_metrics_gfd-flood_S-rwi.gpkg
+snakemake -c1 data/results/social_flood/countries/KEN/inequality_metrics/KEN_ADM0_metrics_gfd_all_coastal-flood_S-rwi_P-2015.gpkg
 """
 
 rule inequality_metrics_observed_decomposed:
@@ -439,3 +445,33 @@ rule dfo_event_analysis:
 Test with
 snakemake -c1 data/results/social_flood/events/DFO_1595/DFO_1595_results.csv
 """
+
+
+"""
+Bulk run temporal observed floods.
+"""
+
+configfile: "config/config.yaml"
+
+FLOOD_YEARS = [str(year) for year in range(2000, 2019)]
+
+POP_YEAR_BY_FLOOD_YEAR = {
+    year: year if int(year) % 5 == 0 else f"interpolated-{year}"
+    for year in FLOOD_YEARS
+}
+
+TEMPORAL_INEQUALITY_TARGETS = [
+    (
+        f"data/results/social_flood/countries/{iso3}/inequality_metrics/"
+        f"{iso3}_ADM0_metrics_gfd_{flood_year}_{flood_type}-flood_"
+        f"S-rwi_P-{POP_YEAR_BY_FLOOD_YEAR[flood_year]}.gpkg"
+    )
+    for iso3 in config["iso_codes"]
+    for flood_type in ["coastal", "inland"]
+    for flood_year in FLOOD_YEARS
+]
+
+
+rule inequality_metrics_observed_temporal:
+    input:
+        TEMPORAL_INEQUALITY_TARGETS
