@@ -15,7 +15,7 @@ iso_codes:
 # - "BIH"
 # - "BLZ"
 # - "BOL"
-- "BRA" # mem
+# - "BRA" # mem
 # - "BTN"
 # - "BWA"
 # - "CAF"
@@ -42,7 +42,7 @@ iso_codes:
 # - "HND"
 # - "HTI"
 - "IDN" # mem
-- "IND" # mem
+# - "IND" # mem
 # - "JAM"
 # - "JOR"
 # - "KAZ"
