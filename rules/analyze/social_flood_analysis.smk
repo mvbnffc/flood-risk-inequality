@@ -483,3 +483,8 @@ rule pop_temporal_observed:
     input:
         expand("data/results/social_flood/countries/{ISO3}/inequality_metrics/{ISO3}_ADM0_metrics_gfd_all_{TYPE}-flood_S-rwi_P-{POP_YEAR}.gpkg",
             ISO3=config['iso_codes'], TYPE=FLOOD_TYPES, POP_YEAR=POP_YEARS)
+
+rule static_pop_temporal_observed:
+    input:
+        expand("data/results/social_flood/countries/{ISO3}/inequality_metrics/{ISO3}_ADM0_metrics_gfd_{FLOOD_YEAR}_{TYPE}-flood_S-rwi_P-2000.gpkg",
+            ISO3=config['iso_codes'], FLOOD_YEAR=FLOOD_YEARS, TYPE=FLOOD_TYPES)
