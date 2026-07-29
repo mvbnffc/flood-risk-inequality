@@ -12,6 +12,7 @@ from tqdm import tqdm
 import numpy as np
 import rasterio
 import zipfile
+import shutil
 
 if __name__ == "__main__":
     try:
@@ -26,30 +27,27 @@ logging.info(f"Preparing the Global Flood Database maps for a global merge.")
 
 #### Define functions for the analysis ####
 def extract_files(zip_path):
-    # Create unzip folder (if it doesn't already exist)
-    os.makedirs(os.path.join(input_path, "unzipped"), exist_ok=True)
+    unzip_path = os.path.join(input_path, "unzipped")
+    os.makedirs(unzip_path, exist_ok=True)
 
-    with zipfile.ZipFile(zip_path, 'r') as zf:
-        # List all files that end with .tif
-        tif_files = [f for f in zf.namelist() if f.lower().endswith('.tif')]
-        json_files = [f for f in zf.namelist() if f.lower().endswith('.json')]
+    with zipfile.ZipFile(zip_path, "r") as zf:
+        files = [
+            f for f in zf.namelist()
+            if f.lower().endswith((".tif", ".json"))
+        ]
 
-        if not tif_files:
-            raise ValueError(f"No TIFF file found in {zip_path}")
-        if not json_files:
-            raise ValueError(f"No JSON file found in {zip_path}")
+        for member in files:
+            output_file = os.path.join(
+                unzip_path,
+                os.path.basename(member)
+            )
 
-        tif_file = tif_files[0]
-        json_file = json_files[0]
-        output_tif = os.path.join(os.path.join(input_path, "unzipped"), os.path.basename(tif_file))
-        output_json = os.path.join(os.path.join(input_path, "unzipped"), os.path.basename(json_file))
+            # Avoid extracting files again
+            if os.path.exists(output_file):
+                continue
 
-        # Extract the TIFF file's content and write it to output file
-        with open(output_tif, 'wb') as tif_out:
-            tif_out.write(zf.read(tif_file))
-        # Extract the TIFF file's content and write it to output file
-        with open(output_json, 'wb') as json_out:
-            json_out.write(zf.read(json_file))
+            with zf.open(member) as src, open(output_file, "wb") as dst:
+                shutil.copyfileobj(src, dst, length=1024 * 1024 * 16)
 
 def shorten_filename(file_path):
     """
@@ -87,6 +85,7 @@ os.makedirs(output_path, exist_ok=True)
 logging.info("Extract the rasters (and JSON files) from the zipped folder.")
 zipped_files = glob.glob(os.path.join(input_path, "*.zip"))
 for zipped_file in tqdm(zipped_files):
+    logging.info(f"Extracting {zipped_file}")
     extract_files(zipped_file)
 
 logging.info("Loop over TIF files and converting NaNs - skipping those for specified in config folder.")
