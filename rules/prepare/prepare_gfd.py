@@ -7,6 +7,7 @@ import logging
 import sys
 import glob
 import os
+from tqdm import tqdm
 
 import numpy as np
 import rasterio
@@ -85,7 +86,7 @@ os.makedirs(output_path, exist_ok=True)
 
 logging.info("Extract the rasters (and JSON files) from the zipped folder.")
 zipped_files = glob.glob(os.path.join(input_path, "*.zip"))
-for zipped_file in zipped_files:
+for zipped_file in tqdm(zipped_files):
     extract_files(zipped_file)
 
 logging.info("Loop over TIF files and converting NaNs - skipping those for specified in config folder.")
@@ -97,7 +98,7 @@ with open("config/gfd_ignore.txt", "r") as f:
 tif_files = glob.glob(os.path.join(input_path, "unzipped", "*.tif"))
 json_files = glob.glob(os.path.join(input_path, "unzipped", "*.json"))
 
-for file in tif_files:
+for file in tqdm(tif_files):
     if not any(skip_id in os.path.basename(file) for skip_id in skip_files):
         process_raster(file, output_path)
 
@@ -105,7 +106,7 @@ logging.info("Copying relevant JSON files.")
 # Create json folder
 os.makedirs(os.path.join(output_path, "json"), exist_ok=True)
 # Also want to extract the JSON files.
-for file in json_files:
+for file in tqdm(json_files):
     if not any(skip_id in os.path.basename(file) for skip_id in skip_files):
         with open(file, 'r') as json_in:
             json_out_path = os.path.join(output_path, "json", os.path.basename(file))
