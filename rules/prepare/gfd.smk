@@ -14,8 +14,7 @@ rule prepare_gfd_merge:
     input:
         raw_gfd_folder="data/inputs/gfd/raw/"
     output:
-        merge_inland_gfd_folder=directory("data/inputs/gfd/prep/inland/"),
-        merge_coastal_gfd_folder=directory("data/inputs/gfd/prep/coastal/")
+        merge_gfd_folder=directory("data/inputs/gfd/prep/")
     script:
         "./prepare_gfd.py"
 
