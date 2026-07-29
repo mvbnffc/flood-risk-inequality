@@ -426,9 +426,22 @@ def get_event_year(wildcards):
     years = pd.read_csv("config/gfd_years.csv")
     event_id = int(re.sub(r"\D", "", str(wildcards.event_id)))
 
-    return str(
-        years.loc[years["DFO_ID"] == event_id, "Year"].iloc[0]
-    )
+    matching_years = years.loc[years["DFO_ID"] == event_id, "Year"]
+
+    if matching_years.empty:
+        raise ValueError(f"No year found for DFO event {event_id}")
+
+    return int(matching_years.iloc[0])
+
+
+def get_event_pop_year(wildcards):
+    year = get_event_year(wildcards)
+    exact_pop_years = {2000, 2005, 2010, 2015, 2020}
+
+    if year in exact_pop_years:
+        return str(year)
+
+    return f"interpolated-{year}"
 
 
 rule dfo_event_analysis:
@@ -438,7 +451,7 @@ rule dfo_event_analysis:
     """
     input:
         rwi_file = lambda wc: expand("data/inputs/analysis/countries/{ISO3}/{ISO3}_rwi.tif", ISO3=get_event_iso3s(wc)),
-        pop_file = lambda wc: expand("data/inputs/analysis/countries/{ISO3}/{ISO3}_ghs-pop_{YEAR}.tif", ISO3=get_event_iso3s(wc), YEAR=get_event_year(wc)),
+        pop_file = lambda wc: expand("data/inputs/analysis/countries/{ISO3}/{ISO3}_ghs-pop_{YEAR}.tif", ISO3=get_event_iso3s(wc), YEAR=get_event_pop_year(wc)),
         mask_file = lambda wc: expand("data/inputs/analysis/countries/{ISO3}/{ISO3}_surface_water.tif", ISO3=get_event_iso3s(wc)),
         urban_file= lambda wc: expand("data/inputs/analysis/countries/{ISO3}/{ISO3}_ghs-mod_fixed.tif", ISO3=get_event_iso3s(wc)),
         flood_file = lambda wc: expand("data/inputs/analysis/events/DFO_{event_id}/{ISO3}_{event_id}.tif", ISO3=get_event_iso3s(wc), event_id=wc.event_id),
@@ -448,6 +461,7 @@ rule dfo_event_analysis:
     params:
         iso3_list = lambda wc: get_event_iso3s(wc),
         year = lambda wc: get_event_year(wc)
+        pop_year = lambda wc: get_event_pop_year(wc)
     script:
         "./dfo_event_risk_analysis.py"
 
