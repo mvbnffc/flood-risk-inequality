@@ -85,7 +85,6 @@ os.makedirs(output_path, exist_ok=True)
 logging.info("Extract the rasters (and JSON files) from the zipped folder.")
 zipped_files = glob.glob(os.path.join(input_path, "*.zip"))
 for zipped_file in tqdm(zipped_files):
-    logging.info(f"Extracting {zipped_file}")
     extract_files(zipped_file)
 
 logging.info("Loop over TIF files and converting NaNs - skipping those for specified in config folder.")
