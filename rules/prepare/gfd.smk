@@ -58,7 +58,7 @@ rule clip_gfd:
         trimmed_flood_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_gfd_{YEAR}_{TYPE}-flood.tif",
     wildcard_constraints:
         TYPE="inland|coastal",
-        YEAR="all|2000|2001|2002|2003|2004|2005|2006|2007|2008|2009|2010|2011|2012|2013|2014|2015|2016|2017|2018"
+        YEAR="all|early|late|2000|2001|2002|2003|2004|2005|2006|2007|2008|2009|2010|2011|2012|2013|2014|2015|2016|2017|2018"
     shell:
         """
         set -ex
