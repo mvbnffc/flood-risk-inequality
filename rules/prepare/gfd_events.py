@@ -118,7 +118,7 @@ for country in valid_countries:
     logging.info(f"Working on {country}...")
     # Load boundary and pop path (pop will be used for clipping) WARNING HARD CODING PATHS HERE
     boundary_path = current_file.parents[2] / "data" / "inputs" / "boundaries" / f"{country}" / f"geobounds_{country}.geojson"
-    pop_path = current_file.parents[2] / "data" / "inputs" / "analysis" / "countries"/ f"{country}" / f"{country}_ghs-pop.tif"
+    pop_path = current_file.parents[2] / "data" / "inputs" / "analysis" / "countries"/ f"{country}" / f"{country}_ghs-pop_2020.tif"
     if not os.path.exists(boundary_path):
         sys.exit(f"Boundary file for {country} not found. Consider running all_boundaries snakemake rule.")
     if not os.path.exists(pop_path):
