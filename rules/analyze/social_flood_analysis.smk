@@ -427,7 +427,7 @@ def get_event_year(wildcards):
     event_id = int(re.sub(r"\D", "", str(wildcards.event_id)))
 
     return str(
-        years.loc[years["DFO_id"] == event_id, "Year"].iloc[0]
+        years.loc[years["DFO_ID"] == event_id, "Year"].iloc[0]
     )
 
 
