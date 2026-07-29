@@ -447,17 +447,18 @@ rule summarize_baseline_capital_stock_losses:
     """
     input:
         admin_areas = "data/inputs/boundaries/{ISO3}/geobounds_{ISO3}.gpkg",
-        res_risk_file="data/results/flood_risk/countries/{ISO3}/{ISO3}_{MODEL}-flood-risk_protected_AAR_V-JRC.tif",
-        nres_risk_file="data/results/flood_risk/countries/{ISO3}/{ISO3}_{MODEL}-flood-risk_protected_AAR_V-NRES.tif",
-        infr_risk_file="data/results/flood_risk/countries/{ISO3}/{ISO3}_{MODEL}-flood-risk_protected_AAR_V-INFR.tif",
+        res_risk_file="data/results/flood_risk/countries/{ISO3}/{ISO3}_{MODEL}-flood-risk_{metric}_V-JRC.tif",
+        nres_risk_file="data/results/flood_risk/countries/{ISO3}/{ISO3}_{MODEL}-flood-risk_{metric}_V-NRES.tif",
+        infr_risk_file="data/results/flood_risk/countries/{ISO3}/{ISO3}_{MODEL}-flood-risk_{metric}_V-INFR.tif",
         res_capstock_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_res_capstock.tif",
         nres_capstock_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_nres_capstock.tif",
         infr_capstock_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_inf_capstock.tif",
         mask_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_surface_water.tif"
     output:
-        regional_losses = "data/results/flood_risk/summary/countries/{ISO3}/{ISO3}_{ADMIN_SLUG}_metrics_{MODEL}-flood_AALs_baseline_capstock.gpkg",
+        regional_losses = "data/results/flood_risk/summary/countries/{ISO3}/{ISO3}_{ADMIN_SLUG}_metrics_{MODEL}-flood_{metric}_baseline_capstock.gpkg",
     wildcard_constraints:
-        MODEL="giri|jrc|wri",
+        metric="protected_AAR|RP10|RP20|RP50|RP75|RP100|RP200|RP500",
+        MODEL="jrc",
         ADMIN_SLUG="ADM0|ADM1|ADM2"
     script:
         "./capital_stock_losses.py"
