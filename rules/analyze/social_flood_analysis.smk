@@ -460,7 +460,7 @@ rule dfo_event_analysis:
         results = "data/results/social_flood/events/DFO_{event_id}/DFO_{event_id}_results.csv"
     params:
         iso3_list = lambda wc: get_event_iso3s(wc),
-        year = lambda wc: get_event_year(wc)
+        year = lambda wc: get_event_year(wc),
         pop_year = lambda wc: get_event_pop_year(wc)
     script:
         "./dfo_event_risk_analysis.py"
