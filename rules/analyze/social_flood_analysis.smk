@@ -488,7 +488,7 @@ rule pop_temporal_observed:
 rule inequality_metrics_oberved_temporal_binned:
     input:
         expand("data/results/social_flood/countries/{ISO3}/inequality_metrics/{ISO3}_ADM0_metrics_gfd_early_{TYPE}-flood_S-rwi_P-2005.gpkg",
-            ISO3=config['iso_codes'], TYPE=FLOOD_TYPES)
+            ISO3=config['iso_codes'], TYPE=FLOOD_TYPES),
         expand("data/results/social_flood/countries/{ISO3}/inequality_metrics/{ISO3}_ADM0_metrics_gfd_late_{TYPE}-flood_S-rwi_P-2015.gpkg",
             ISO3=config['iso_codes'], TYPE=FLOOD_TYPES)
 
