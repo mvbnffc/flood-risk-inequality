@@ -21,7 +21,7 @@ rule rasterize_urbanization:
     """
     input:
         urbanization="data/inputs/analysis/countries/{ISO3}/{ISO3}_urbanization.gpkg",
-        pop_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_ghs-pop.tif",
+        pop_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_ghs-pop_2020.tif",
     output:
         rasterized="data/inputs/analysis/countries/{ISO3}/{ISO3}_urbanization.tif",
     script:
@@ -36,7 +36,7 @@ rule clip_ghs_mod:
     input:
         ghs_mod_file="data/inputs/ghs-mod/GHS_SMOD_E2020_GLOBE_R2023A_54009_1000_V2_0.tif",
         boundary_file="data/inputs/boundaries/{ISO3}/geobounds_{ISO3}.geojson",
-        pop_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_ghs-pop.tif",
+        pop_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_ghs-pop_2020.tif",
     output:
         trimmed_ghs_mod="data/inputs/analysis/countries/{ISO3}/{ISO3}_ghs-mod.tif",
     shell:
@@ -73,7 +73,7 @@ rule fix_ghs_mod:
     """
     input:
         ghs_mod="data/inputs/analysis/countries/{ISO3}/{ISO3}_ghs-mod.tif",
-        pop_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_ghs-pop.tif",
+        pop_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_ghs-pop_2020.tif",
     output:
         fixed_ghs_mod="data/inputs/analysis/countries/{ISO3}/{ISO3}_ghs-mod_fixed.tif",
     script:
