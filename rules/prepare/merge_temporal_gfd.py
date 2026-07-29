@@ -78,11 +78,18 @@ global_height = int(np.ceil((global_extent[3] - global_extent[1])) / raster_reso
 logging.info("Initialize the global raster")
 global_raster = np.zeros((global_height, global_width), dtype=np.int16)
 
-logging.info(f"Selecting GFD files for {epoch}.")
-gfd_ids = []
+logging.info(f"Selecting GFD files for {epoch} and {flood_type} coastal flooding.")
+epoch_ids = []
 with open(f"config/gfd_{epoch}.txt", "r") as f:
     for line in f.readlines():
-        gfd_ids.append(line.strip())
+        epoch_ids.append(line.strip())
+
+type_ids = []
+with open(f"config/gfd_{flood_type}.txt", "r") as f:
+    for line in f.readlines():
+        type_ids.append(line.strip())
+
+gfd_ids = list(set(epoch_ids) & set(type_ids))  # Intersection of both lists
 
 logging.info(f"Processing {len(gfd_ids)} rasters and merging into global raster.")
 for file in tqdm(raster_files):

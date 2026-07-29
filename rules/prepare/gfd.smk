@@ -23,7 +23,7 @@ rule merge_gfd:
     This rule merges GFD rasters into one global file
     """
     input:
-        merge_gfd_folder="data/inputs/gfd/prep/{TYPE}/"
+        merge_gfd_folder="data/inputs/gfd/prep/"
     output:
         merge_gfd_file="data/inputs/gfd/merged/gfd_all_{TYPE}.tif"
     wildcard_constraints:

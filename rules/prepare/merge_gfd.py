@@ -71,6 +71,15 @@ def pad_and_add_raster(src, global_raster, row_offset, col_offset, global_extent
 logging.info("Reading raster file names.")
 raster_files = glob.glob(os.path.join(input_path, "*.tif"))
 
+logging.info(f"Selecting {flood_type} GFD files to merge.")
+gfd_ids = []
+with open(f"config/gfd_{flood_type}.txt", "r") as f:
+    for line in f.readlines():
+        gfd_ids.append(line.strip())
+
+raster_files = [file for file in raster_files if any(gfd_id in os.path.basename(file) for gfd_id in gfd_ids)]
+logging.info(f"Selected {len(raster_files)} {flood_type} GFD files for merging.")
+
 logging.info("Calculate global extent.")
 global_extent = get_global_extent(raster_files)
 global_width = int(np.ceil((global_extent[2] - global_extent[0])) / raster_resolution)
