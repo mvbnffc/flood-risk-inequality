@@ -5,6 +5,7 @@ Rulebook for the social flood analyses (concentration curves and inequality metr
 import json
 import os
 import re
+import pandas as pd
 
 rule inequality_metrics:
     """
@@ -421,6 +422,14 @@ def get_event_iso3s(wildcards):
 
     return props["valid"]
 
+def get_event_year(wildcards):
+    years = pd.read_csv("config/gfd_years.csv")
+    event_id = int(re.sub(r"\D", "", str(wildcards.event_id)))
+
+    return str(
+        years.loc[years["DFO_id"] == event_id, "Year"].iloc[0]
+    )
+
 
 rule dfo_event_analysis:
     """
@@ -429,7 +438,7 @@ rule dfo_event_analysis:
     """
     input:
         rwi_file = lambda wc: expand("data/inputs/analysis/countries/{ISO3}/{ISO3}_rwi.tif", ISO3=get_event_iso3s(wc)),
-        pop_file = lambda wc: expand("data/inputs/analysis/countries/{ISO3}/{ISO3}_ghs-pop.tif", ISO3=get_event_iso3s(wc)),
+        pop_file = lambda wc: expand("data/inputs/analysis/countries/{ISO3}/{ISO3}_ghs-pop_{YEAR}.tif", ISO3=get_event_iso3s(wc), YEAR=get_event_year(wc)),
         mask_file = lambda wc: expand("data/inputs/analysis/countries/{ISO3}/{ISO3}_surface_water.tif", ISO3=get_event_iso3s(wc)),
         urban_file= lambda wc: expand("data/inputs/analysis/countries/{ISO3}/{ISO3}_ghs-mod_fixed.tif", ISO3=get_event_iso3s(wc)),
         flood_file = lambda wc: expand("data/inputs/analysis/events/DFO_{event_id}/{ISO3}_{event_id}.tif", ISO3=get_event_iso3s(wc), event_id=wc.event_id),
@@ -437,7 +446,8 @@ rule dfo_event_analysis:
     output:
         results = "data/results/social_flood/events/DFO_{event_id}/DFO_{event_id}_results.csv"
     params:
-        iso3_list = lambda wc: get_event_iso3s(wc)
+        iso3_list = lambda wc: get_event_iso3s(wc),
+        year = lambda wc: get_event_year(wc)
     script:
         "./dfo_event_risk_analysis.py"
 

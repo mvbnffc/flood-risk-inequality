@@ -25,6 +25,7 @@ if __name__ == "__main__":
         output_path: str = snakemake.output["results"]
         event_id: str = snakemake.wildcards.event_id
         iso3_list = snakemake.params.iso3_list
+        year = snakemake.params.year
     except NameError:
         raise ValueError("Must be run via snakemake.")
     
@@ -33,7 +34,23 @@ logging.basicConfig(format="%(asctime)s %(process)d %(filename)s %(message)s", l
 # # Update notation for GADM
 # admin_level = int(administrative_level.replace("ADM-", ""))
 
-logging.info(f"Calculating risk metrics for DFO event {event_id} for {len(iso3_list)} countries: {iso3_list}.")
+# Extract flood type from event_id
+coastal_files = []
+inland_files = []
+with open("config/gfd_inland.txt", "r") as f:
+    for line in f.readlines():
+        inland_files.append(line.strip())
+with open("config/gfd_coastal.txt", "r") as f:
+    for line in f.readlines():
+        coastal_files.append(line.strip())
+if (int(inland_id) == int(event_id) for inland_id in inland_files):
+    flood_type = "inland" 
+elif (int(coastal_id) == int(event_id) for coastal_id in coastal_files):
+    flood_type = "coastal"
+else:
+    raise ValueError(f"Event ID {event_id} not found in inland or coastal flood lists.")
+                             
+logging.info(f"Calculating risk metrics for {year} {flood_type} DFO event {event_id} for {len(iso3_list)} countries: {iso3_list}.")
 
 results = [] # List for collecting results
 logging.info("Analyzing one country at a time.")
@@ -293,6 +310,8 @@ for iso3 in iso3_list:
 
     results.append({
         "ISO3": iso3,
+        "TYPE": flood_type,
+        "YEAR": year,
         "FE": FE,
         "BQFE": BQFE,
         "CI": CI,
