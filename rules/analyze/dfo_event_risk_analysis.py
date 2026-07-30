@@ -43,12 +43,17 @@ with open("config/gfd_inland.txt", "r") as f:
 with open("config/gfd_coastal.txt", "r") as f:
     for line in f.readlines():
         coastal_files.append(line.strip())
-if (int(inland_id) == int(event_id) for inland_id in inland_files):
-    flood_type = "inland" 
-elif (int(coastal_id) == int(event_id) for coastal_id in coastal_files):
+
+event_id = int(event_id)
+inland_ids = {int(value) for value in inland_files}
+coastal_ids = {int(value) for value in coastal_files}
+
+if event_id in inland_ids:
+    flood_type = "inland"
+elif event_id in coastal_ids:
     flood_type = "coastal"
 else:
-    raise ValueError(f"Event ID {event_id} not found in inland or coastal flood lists.")
+    raise ValueError(...)
                              
 logging.info(f"Calculating risk metrics for {year} {flood_type} DFO event {event_id} for {len(iso3_list)} countries: {iso3_list}.")
 
