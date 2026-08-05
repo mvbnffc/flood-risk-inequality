@@ -27,7 +27,7 @@ rule merge_gfd:
     output:
         merge_gfd_file="data/inputs/gfd/merged/gfd_all_{TYPE}.tif"
     wildcard_constraints:
-        TYPE="inland|coastal|all"
+        TYPE="inland|coastal|combined"
     script:
         "./merge_gfd.py"
 
@@ -40,7 +40,7 @@ rule merge_temporal_gfd:
     output:
         merge_temporal_gfd_file="data/inputs/gfd/merged/gfd_{YEAR}_{TYPE}.tif"
     wildcard_constraints:
-        TYPE="inland|coastal|all",
+        TYPE="inland|coastal|combined",
         YEAR="early|late|2000|2001|2002|2003|2004|2005|2006|2007|2008|2009|2010|2011|2012|2013|2014|2015|2016|2017|2018"
     script:
         "./merge_temporal_gfd.py"
@@ -56,7 +56,7 @@ rule clip_gfd:
     output:
         trimmed_flood_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_gfd_{YEAR}_{TYPE}-flood.tif",
     wildcard_constraints:
-        TYPE="inland|coastal|all",
+        TYPE="inland|coastal|combined",
         YEAR="all|early|late|2000|2001|2002|2003|2004|2005|2006|2007|2008|2009|2010|2011|2012|2013|2014|2015|2016|2017|2018"
     shell:
         """
@@ -92,7 +92,7 @@ rule binary_gfd:
     output:
         binary_gfd_flood = "data/inputs/analysis/countries/{ISO3}/{ISO3}_gfd_binary_{YEAR}_{TYPE}-flood.tif",
     wildcard_constraints:
-        TYPE="inland|coastal|all",
+        TYPE="inland|coastal|combined",
         YEAR="all|early|late|2000|2001|2002|2003|2004|2005|2006|2007|2008|2009|2010|2011|2012|2013|2014|2015|2016|2017|2018"
     shell:
         """

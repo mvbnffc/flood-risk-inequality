@@ -73,7 +73,7 @@ raster_files = glob.glob(os.path.join(input_path, "*.tif"))
 
 logging.info(f"Selecting {flood_type} GFD files to merge.")
 gfd_ids = []
-if flood_type != 'all':
+if flood_type != 'combined':
     with open(f"config/gfd_{flood_type}.txt", "r") as f:
         for line in f.readlines():
             gfd_ids.append(line.strip())
