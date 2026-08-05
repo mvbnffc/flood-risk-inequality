@@ -83,6 +83,38 @@ Test with
 snakemake -c1 data/inputs/analysis/countries/KEN/KEN_gfd_all_coastal-flood.tif
 """
 
+rule binary_gfd:
+    """
+    Make GFD layer binary (no flood frequency info)
+    """
+    input:
+        gfd_flood = "data/inputs/analysis/countries/{ISO3}/{ISO3}_gfd_{YEAR}_{TYPE}-flood.tif",
+    output:
+        binary_gfd_flood = "data/inputs/analysis/countries/{ISO3}/{ISO3}_gfd_binary_{YEAR}_{TYPE}-flood.tif",
+    wildcard_constraints:
+        TYPE="inland|coastal|all",
+        YEAR="all|early|late|2000|2001|2002|2003|2004|2005|2006|2007|2008|2009|2010|2011|2012|2013|2014|2015|2016|2017|2018"
+    shell:
+        """
+        set -ex
+
+        mkdir --parents $(dirname {output.binary_gfd_flood})
+        
+        # Clip raster using GeoJSON geometry
+        gdal_calc.py \
+            -A {input.gfd_flood} \
+            --outfile={output.binary_gfd_flood} \
+            --calc="A>1" \
+            --type=Byte \
+            --NoDataValue=255 \
+            --co="COMPRESS=DEFLATE" \
+            --overwrite
+        """
+""" 
+Test with
+snakemake -c1 data/inputs/analysis/countries/KEN/KEN_gfd_binary_all_coastal-flood.tif
+"""
+
 rule clip_gfd_event:
     """
     Will Clip GFD flood raster to country boundary for specific event.
