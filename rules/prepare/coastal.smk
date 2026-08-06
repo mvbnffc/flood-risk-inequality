@@ -7,7 +7,7 @@ rule clip_deltares_coastal_flood:
     Clip Deltares coastal flood raster to country boundary.
     """
     input:
-        pop_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_ghs-pop.tif",
+        pop_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_ghs-pop_2020.tif",
         raw_flood_file=lambda wc: (
             f"data/inputs/flood/Deltares_coastal/Deltares_coastal_MERIT90m_2018_rp{'%04d' % int(wc.RP)}.tif"
         ),
