@@ -9,7 +9,7 @@ rule concentration_curve:
         flood_file="data/results/flood_risk/countries/{ISO3}/{ISO3}_jrc-flood-risk_protected_AAR_V-{VULN_CURVE}.tif",
     output:
         curve="data/results/national_tooling/countries/{ISO3}/concentration_curves/{ISO3}_jrc_protected_V-{VULN_CURVE}_concentration_curve.csv",
-    wildcards:
+    wildcard_constraints:
         VULN_CURVE="EXP|JRC",
     params:
         n_points=101,
