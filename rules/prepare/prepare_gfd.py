@@ -87,18 +87,12 @@ zipped_files = glob.glob(os.path.join(input_path, "*.zip"))
 for zipped_file in tqdm(zipped_files):
     extract_files(zipped_file)
 
-logging.info("Loop over TIF files and converting NaNs - skipping those for specified in config folder.")
-# Finding GFD IDs to skip (those associated with dambreak flooding)
-skip_files = []
-with open("config/gfd_ignore.txt", "r") as f:
-    for line in f.readlines():
-        skip_files.append(line.strip())
+logging.info("Loop over TIF files and converting NaNs.")
 tif_files = glob.glob(os.path.join(input_path, "unzipped", "*.tif"))
 json_files = glob.glob(os.path.join(input_path, "unzipped", "*.json"))
 
 for file in tqdm(tif_files):
-    if not any(skip_id in os.path.basename(file) for skip_id in skip_files):
-        process_raster(file, output_path)
+    process_raster(file, output_path)
 
 logging.info("Copying relevant JSON files.")
 # Create json folder
