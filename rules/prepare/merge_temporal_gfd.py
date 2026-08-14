@@ -78,7 +78,7 @@ global_height = int(np.ceil((global_extent[3] - global_extent[1])) / raster_reso
 logging.info("Initialize the global raster")
 global_raster = np.zeros((global_height, global_width), dtype=np.int16)
 
-logging.info(f"Selecting GFD files for {epoch} and {flood_type} coastal flooding.")
+logging.info(f"Selecting GFD files for {epoch} and {flood_type} flooding.")
 epoch_ids = []
 with open(f"config/gfd_{epoch}.txt", "r") as f:
     for line in f.readlines():

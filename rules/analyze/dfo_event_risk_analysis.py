@@ -35,25 +35,39 @@ logging.basicConfig(format="%(asctime)s %(process)d %(filename)s %(message)s", l
 # admin_level = int(administrative_level.replace("ADM-", ""))
 
 # Extract flood type from event_id
-coastal_files = []
-inland_files = []
-with open("config/gfd_inland.txt", "r") as f:
+rain_files = []
+snow_files = []
+dam_files = []
+storm_files = []
+with open("config/gfd_rain.txt", "r") as f:
     for line in f.readlines():
-        inland_files.append(line.strip())
-with open("config/gfd_coastal.txt", "r") as f:
+        rain_files.append(line.strip())
+with open("config/gfd_snow.txt", "r") as f:
     for line in f.readlines():
-        coastal_files.append(line.strip())
+        snow_files.append(line.strip())
+with open("config/gfd_storm.txt", "r") as f:
+    for line in f.readlines():
+        storm_files.append(line.strip())
+with open("config/gfd_dam.txt", "r") as f:
+    for line in f.readlines():
+        dam_files.append(line.strip())
 
 event_id = int(event_id)
-inland_ids = {int(value) for value in inland_files}
-coastal_ids = {int(value) for value in coastal_files}
+rain_ids = {int(value) for value in rain_files}
+snow_ids = {int(value) for value in snow_files}
+storm_ids = {int(value) for value in storm_files}
+dam_ids = {int(value) for value in dam_files}
 
-if event_id in inland_ids:
-    flood_type = "inland"
-elif event_id in coastal_ids:
-    flood_type = "coastal"
+if event_id in rain_ids:
+    flood_type = "rain"
+elif event_id in snow_ids:
+    flood_type = "snow"
+elif event_id in storm_ids:
+    flood_type = "storm"
+elif event_id in dam_ids:
+    flood_type = "dam"
 else:
-    raise ValueError(...)
+    raise ValueError("Event ID not found in any flood type files.")
                              
 logging.info(f"Calculating risk metrics for {year} {flood_type} DFO event {event_id} for {len(iso3_list)} countries: {iso3_list}.")
 

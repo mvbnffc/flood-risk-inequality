@@ -73,17 +73,9 @@ raster_files = glob.glob(os.path.join(input_path, "*.tif"))
 
 logging.info(f"Selecting {flood_type} GFD files to merge.")
 gfd_ids = []
-if flood_type != 'combined':
-    with open(f"config/gfd_{flood_type}.txt", "r") as f:
-        for line in f.readlines():
-            gfd_ids.append(line.strip())
-else:
-    with open("config/gfd_inland.txt", "r") as f:
-        for line in f.readlines():
-            gfd_ids.append(line.strip())
-    with open("config/gfd_coastal.txt", "r") as f:
-        for line in f.readlines():
-            gfd_ids.append(line.strip())
+with open(f"config/gfd_{flood_type}.txt", "r") as f:
+    for line in f.readlines():
+        gfd_ids.append(line.strip())
 
 raster_files = [file for file in raster_files if any(gfd_id in os.path.basename(file) for gfd_id in gfd_ids)]
 logging.info(f"Selected {len(raster_files)} {flood_type} GFD files for merging.")
