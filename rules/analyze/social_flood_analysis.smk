@@ -500,7 +500,7 @@ rule inequality_metrics_observed_temporal:
     input:
         TEMPORAL_INEQUALITY_TARGETS
 
-FLOOD_TYPES = ['coastal', 'inland', 'combined']
+FLOOD_TYPES = ['rain', 'snow', 'dam', 'storm', 'combined']
 POP_YEARS = ['2000', '2005', '2010', '2015', '2020']
 MODELS = ['gfd', 'gfd_binary']
 
@@ -526,3 +526,8 @@ rule binary_stacked_observed:
     input:
         expand("data/results/social_flood/countries/{ISO3}/inequality_metrics/{ISO3}_ADM0_metrics_{MODEL}_all_{TYPE}-flood_S-rwi_P-2010.gpkg",
             ISO3=config['iso_codes'], MODEL=MODELS, TYPE=FLOOD_TYPES)
+
+rule observed_all_flood_types:
+    input:
+        expand("data/results/social_flood/countries/{ISO3}/inequality_metrics/{ISO3}_ADM0_metrics_gfd_all_{TYPE}-flood_S-rwi_P-2010.gpkg",
+            ISO3=config['iso_codes'], TYPE=FLOOD_TYPES)
