@@ -99,11 +99,10 @@ logging.info("Copying relevant JSON files.")
 os.makedirs(os.path.join(output_path, "json"), exist_ok=True)
 # Also want to extract the JSON files.
 for file in tqdm(json_files):
-    if not any(skip_id in os.path.basename(file) for skip_id in skip_files):
-        with open(file, 'r') as json_in:
-            json_out_path = os.path.join(output_path, "json", os.path.basename(file))
-            with open(json_out_path, 'w') as json_out:
-                json_out.write(json_in.read())
+    with open(file, 'r') as json_in:
+        json_out_path = os.path.join(output_path, "json", os.path.basename(file))
+        with open(json_out_path, 'w') as json_out:
+            json_out.write(json_in.read())
 
 logging.info("Done.")
 
