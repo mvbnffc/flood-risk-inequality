@@ -5,7 +5,7 @@
 iso_codes:
 - "AGO"
 - "ALB"
-# - "ARG" # mem
+- "ARG" # mem
 - "ARM"
 - "BDI"
 - "BEN"
@@ -15,19 +15,19 @@ iso_codes:
 - "BIH"
 - "BLZ"
 - "BOL"
-# - "BRA" # mem
+- "BRA" # mem
 - "BTN"
 - "BWA"
 - "CAF"
 - "CIV"
 - "CMR"
-# - "COD" # mem
+- "COD" # mem
 - "COG"
 - "COL"
 - "CRI"
 - "DJI"
 - "DOM"
-# - "DZA" # mem
+- "DZA" # mem
 - "ECU"
 - "EGY"
 - "ERI"
@@ -41,8 +41,8 @@ iso_codes:
 - "GUY"
 - "HND"
 - "HTI"
-# - "IDN" # mem
-# - "IND" # mem
+- "IDN" # mem
+- "IND" # mem
 - "JAM"
 - "JOR"
 - "KAZ"
@@ -56,7 +56,7 @@ iso_codes:
 - "MAR"
 - "MDA"
 - "MDG"
-# - "MEX" # mem
+- "MEX" # mem
 - "MKD"
 - "MLI"
 - "MNE"
