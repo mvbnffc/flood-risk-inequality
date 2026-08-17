@@ -45,7 +45,7 @@ iso_codes:
 # - "IND" # mem
 - "JAM"
 - "JOR"
-- "KAZ"
+# - "KAZ" # mem
 - "KEN"
 - "KGZ"
 - "KHM"
