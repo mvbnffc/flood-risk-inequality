@@ -284,3 +284,13 @@ rule tool_dry_proofing_costs:
 Test with
 snakemake -c1 data/results/national_tooling/countries/KEN/KEN_adaptation-cost_dp_m-jrc_ADM2.gpkg
 """
+
+
+ADMS = ['ADM0', 'ADM1', 'ADM2']
+URBANS = [11, 12, 13, 21, 22, 23, 30]
+RPS = [10, 20, 50, 100, 200]
+
+rule fp_capstock_bulk:
+    input:
+        expand("data/results/national_tooling/countries/KEN/KEN_{ADM}_metrics_jrc-flood_AALs_adapted_fp_rp{RP}_duc{URBAN}_capstock.gpkg",,
+            ADM=ADMS, RP=RPS, URBAN=URBANS)
