@@ -94,8 +94,7 @@ rule tool_dry_proofing_capital_stock_losses:
         regional_losses = "data/results/national_tooling/countries/{ISO3}/{ISO3}_{ADMIN_SLUG}_metrics_{MODEL}-flood_AALs_adapted_dp_capstock.gpkg",
     wildcard_constraints:
         MODEL="jrc",
-        ADMIN_SLUG="ADM0|ADM1|ADM2",
-        urban_class="11|12|13|21|22|23|30"
+        ADMIN_SLUG="ADM0|ADM1|ADM2"
     script:
         "./capital_stock_losses.py"
 """
@@ -285,12 +284,62 @@ Test with
 snakemake -c1 data/results/national_tooling/countries/KEN/KEN_adaptation-cost_dp_m-jrc_ADM2.gpkg
 """
 
-
+ISO3s = ['KEN', 'MOZ']
 ADMS = ['ADM0', 'ADM1', 'ADM2']
 URBANS = [11, 12, 13, 21, 22, 23, 30]
 RPS = [10, 20, 50, 100, 200]
 
+rule base_capstock_bulk:
+    input:
+        expand("data/results/national_tooling/countries/{ISO3}/{ISO3}_{ADM}_metrics_jrc-flood_protected_AAR_baseline_capstock.gpkg",
+            ISO3=ISO3s, ADM=ADMS)
+
 rule fp_capstock_bulk:
     input:
-        expand("data/results/national_tooling/countries/KEN/KEN_{ADM}_metrics_jrc-flood_AALs_adapted_fp_rp{RP}_duc{URBAN}_capstock.gpkg",
-            ADM=ADMS, RP=RPS, URBAN=URBANS)
+        expand("data/results/national_tooling/countries/{ISO3}/{ISO3}_{ADM}_metrics_jrc-flood_AALs_adapted_fp_rp{RP}_duc{URBAN}_capstock.gpkg",
+            ISO3=ISO3s, ADM=ADMS, RP=RPS, URBAN=URBANS)
+
+rule dp_capstock_bulk:
+    input:
+        expand("data/results/national_tooling/countries/{ISO3}/{ISO3}_{ADM}_metrics_jrc-flood_AALs_adapted_dp_capstock.gpkg",
+            ISO3=ISO3s, ADM=ADMS)
+
+rule rl_capstock_bulk:
+    input:
+        expand("data/results/national_tooling/countries/{ISO3}/{ISO3}_{ADM}_metrics_jrc-flood_AALs_adapted_rl_duc{URBAN}_capstock.gpkg",
+            ISO3=ISO3s, ADM=ADMS, URBAN=URBANS)
+
+rule base_metric_bulk:
+    input:
+        expand("data/results/national_tooling/countries/{ISO3}/{ISO3}_{ADM}_metrics_jrc-flood_protected_AAR_V-EXP_S-rwi.gpkg",
+            ISO3=ISO3s, ADM=ADMS)
+
+rule fp_metric_bulk:
+    input:
+        expand("data/results/national_tooling/countries/{ISO3}/{ISO3}_{ADM}_metrics_jrc-flood_adapted_AAR_V-EXP_S-rwi_fp_rp{RP}_duc{URBAN}.gpkg",
+            ISO3=ISO3s, ADM=ADMS, RP=RPS, URBAN=URBANS)
+
+rule dp_metric_bulk:
+    input:
+        expand("data/results/national_tooling/countries/{ISO3}/{ISO3}_{ADM}_metrics_jrc-flood_adapted_AAR_V-EXP_S-rwi_dp.gpkg",
+            ISO3=ISO3s, ADM=ADMS)
+
+rule rl_metric_bulk:
+    input:
+        expand("data/results/national_tooling/countries/{ISO3}/{ISO3}_{ADM}_metrics_jrc-flood_adapted_AAR_V-EXP_S-rwi_rl_duc{URBAN}.gpkg",
+            ISO3=ISO3s, ADM=ADMS, URBAN=URBANS)
+
+rule fp_cost_bulk:
+    input:
+        expand("data/results/national_tooling/countries/{ISO3}/{ISO3}_adaptation-cost_fp_rp{RP}_duc{URBAN}_{ADM}.gpkg",
+            ISO3=ISO3s, ADM=ADMS, RP=RPS, URBAN=URBANS)
+
+rule dp_cost_bulk:
+    input:
+        expand("data/results/national_tooling/countries/{ISO3}/{ISO3}_adaptation-cost_dp_m-jrc_{ADM}.gpkg",
+            ISO3=ISO3s, ADM=ADMS)
+
+rule rl_cost_bulk:
+    input:
+        expand("data/results/national_tooling/countries/{ISO3}/{ISO3}_adaptation-cost_rl_m-jrc_duc{URBAN}_{ADM}.gpkg",
+            ISO3=ISO3s, ADM=ADMS, URBAN=URBANS)
