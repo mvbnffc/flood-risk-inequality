@@ -21,7 +21,7 @@ rule tool_baseline_capital_stock_losses:
         "./capital_stock_losses.py"
 """
 Test with
-snakemake -c1 data/results/national_tooling/countries/KEN/KEN_ADM2_metrics_jrc-flood_AALs_baseline_capstock.gpkg 
+snakemake -c1 data/results/national_tooling/countries/KEN/KEN_ADM2_metrics_jrc-flood_protected_AAR_baseline_capstock.gpkg 
 """
 
 rule tool_adapted_capital_stock_losses:
