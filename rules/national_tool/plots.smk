@@ -4,7 +4,7 @@ rule concentration_curve:
     """
     input:
         pop_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_worldpop_total.tif",
-        rwi_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_rwi.tif",
+        rwi_file="data/results/national_tooling/countries/{ISO3}/{ISO3}_pop_rwi_values.tif",
         surface_water="data/inputs/analysis/countries/{ISO3}/{ISO3}_surface_water.tif",
         flood_file="data/results/flood_risk/countries/{ISO3}/{ISO3}_jrc-flood-risk_protected_AAR_V-{VULN_CURVE}.tif",
     output:
