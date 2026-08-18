@@ -500,7 +500,7 @@ rule inequality_metrics_observed_temporal:
     input:
         TEMPORAL_INEQUALITY_TARGETS
 
-FLOOD_TYPES = ['rain', 'snow', 'dam', 'storm', 'combined']
+FLOOD_TYPES = ['combined'] # ['rain', 'snow', 'dam', 'storm', 'combined']
 POP_YEARS = ['2000', '2005', '2010', '2015', '2020']
 MODELS = ['gfd', 'gfd_binary']
 
