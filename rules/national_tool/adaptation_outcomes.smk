@@ -292,5 +292,5 @@ RPS = [10, 20, 50, 100, 200]
 
 rule fp_capstock_bulk:
     input:
-        expand("data/results/national_tooling/countries/KEN/KEN_{ADM}_metrics_jrc-flood_AALs_adapted_fp_rp{RP}_duc{URBAN}_capstock.gpkg",,
+        expand("data/results/national_tooling/countries/KEN/KEN_{ADM}_metrics_jrc-flood_AALs_adapted_fp_rp{RP}_duc{URBAN}_capstock.gpkg",
             ADM=ADMS, RP=RPS, URBAN=URBANS)
