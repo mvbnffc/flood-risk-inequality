@@ -121,7 +121,7 @@ rule tool_inequality_metrics_protected:
     wildcard_constraints:
         MODEL="jrc",
         VULN_CURVE="JRC|EXP",
-        SOCIAL="gdp",
+        SOCIAL="rwi",
         ADMIN_SLUG="ADM0|ADM1|ADM2"
     script:
         "./inequality_metrics.py"
