@@ -22,6 +22,7 @@ snakemake -c1 data/inputs/analysis/KEN/KEN_rwi.tif
 rule temp_rwi_fix:
     """
     Temp rule that we are using to reassign unassigned pop cells to the average RWI value of the regions subnational ADM2
+    """
     input:
         boundary_file = "data/inputs/boundaries/{ISO3}/geobounds_{ISO3}.gpkg",
         pop_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_ghs-pop_2020.tif",
