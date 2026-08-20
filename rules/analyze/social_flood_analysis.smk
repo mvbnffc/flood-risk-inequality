@@ -337,7 +337,7 @@ rule inequality_metrics_observed:
                  "2010|interpolated-2011|interpolated-2012|interpolated-2013|interpolated-2014|"
                  "2015|interpolated-2016|interpolated-2017|interpolated-2018|2020",
         MODEL="gfd|gfd_binary",
-        SOCIAL="rwi|gdp",
+        SOCIAL="rwi|gdp|frwi",
         ADMIN_SLUG="ADM0|ADM1|ADM2"
     script:
         "./inequality_metrics.py"
@@ -503,31 +503,32 @@ rule inequality_metrics_observed_temporal:
 FLOOD_TYPES = ['combined'] # ['rain', 'snow', 'dam', 'storm', 'combined']
 POP_YEARS = ['2000', '2005', '2010', '2015', '2020']
 MODELS = ['gfd', 'gfd_binary']
+SOCIALS = ['frwi']
 
 rule pop_temporal_observed:
     input:
-        expand("data/results/social_flood/countries/{ISO3}/inequality_metrics/{ISO3}_ADM0_metrics_gfd_all_{TYPE}-flood_S-rwi_P-{POP_YEAR}.gpkg",
-            ISO3=config['iso_codes'], TYPE=FLOOD_TYPES, POP_YEAR=POP_YEARS)
+        expand("data/results/social_flood/countries/{ISO3}/inequality_metrics/{ISO3}_ADM0_metrics_gfd_all_{TYPE}-flood_S-{SOCIAL}_P-{POP_YEAR}.gpkg",
+            ISO3=config['iso_codes'], TYPE=FLOOD_TYPES, POP_YEAR=POP_YEARS, SOCIAL=SOCIALS)
 
 
 rule inequality_metrics_oberved_temporal_binned:
     input:
-        expand("data/results/social_flood/countries/{ISO3}/inequality_metrics/{ISO3}_ADM0_metrics_gfd_early_{TYPE}-flood_S-rwi_P-2005.gpkg",
-            ISO3=config['iso_codes'], TYPE=FLOOD_TYPES),
-        expand("data/results/social_flood/countries/{ISO3}/inequality_metrics/{ISO3}_ADM0_metrics_gfd_late_{TYPE}-flood_S-rwi_P-2015.gpkg",
-            ISO3=config['iso_codes'], TYPE=FLOOD_TYPES)
+        expand("data/results/social_flood/countries/{ISO3}/inequality_metrics/{ISO3}_ADM0_metrics_gfd_early_{TYPE}-flood_S-{SOCIAL}_P-2005.gpkg",
+            ISO3=config['iso_codes'], TYPE=FLOOD_TYPES, SOCIAL=SOCIALS),
+        expand("data/results/social_flood/countries/{ISO3}/inequality_metrics/{ISO3}_ADM0_metrics_gfd_late_{TYPE}-flood_S-{SOCIAL}_P-2015.gpkg",
+            ISO3=config['iso_codes'], TYPE=FLOOD_TYPES, SOCIAL=SOCIALS)
 
 rule static_pop_temporal_observed:
     input:
-        expand("data/results/social_flood/countries/{ISO3}/inequality_metrics/{ISO3}_ADM0_metrics_{MODEL}_{FLOOD_YEAR}_{TYPE}-flood_S-rwi_P-2010.gpkg",
-            ISO3=config['iso_codes'], MODEL=MODELS, FLOOD_YEAR=FLOOD_YEARS, TYPE=FLOOD_TYPES)
+        expand("data/results/social_flood/countries/{ISO3}/inequality_metrics/{ISO3}_ADM0_metrics_{MODEL}_{FLOOD_YEAR}_{TYPE}-flood_S-{SOCIAL}_P-2010.gpkg",
+            ISO3=config['iso_codes'], MODEL=MODELS, FLOOD_YEAR=FLOOD_YEARS, TYPE=FLOOD_TYPES, SOCIAL=SOCIALS)
 
 rule binary_stacked_observed:
     input:
-        expand("data/results/social_flood/countries/{ISO3}/inequality_metrics/{ISO3}_ADM0_metrics_{MODEL}_all_{TYPE}-flood_S-rwi_P-2010.gpkg",
-            ISO3=config['iso_codes'], MODEL=MODELS, TYPE=FLOOD_TYPES)
+        expand("data/results/social_flood/countries/{ISO3}/inequality_metrics/{ISO3}_ADM0_metrics_{MODEL}_all_{TYPE}-flood_S-{SOCIAL}_P-2010.gpkg",
+            ISO3=config['iso_codes'], MODEL=MODELS, TYPE=FLOOD_TYPES, SOCIAL=SOCIALS)
 
 rule observed_all_flood_types:
     input:
-        expand("data/results/social_flood/countries/{ISO3}/inequality_metrics/{ISO3}_ADM0_metrics_gfd_all_{TYPE}-flood_S-rwi_P-2010.gpkg",
-            ISO3=config['iso_codes'], TYPE=FLOOD_TYPES)
+        expand("data/results/social_flood/countries/{ISO3}/inequality_metrics/{ISO3}_ADM0_metrics_gfd_all_{TYPE}-flood_S-{SOCIAL}_P-2010.gpkg",
+            ISO3=config['iso_codes'], TYPE=FLOOD_TYPES, SOCIAL=SOCIALS)
