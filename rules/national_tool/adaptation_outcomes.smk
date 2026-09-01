@@ -112,7 +112,7 @@ rule tool_inequality_metrics_protected:
     input:
         admin_areas = "data/inputs/boundaries/{ISO3}/geobounds_{ISO3}.gpkg",
         social_file="data/results/national_tooling/countries/{ISO3}/{ISO3}_pop_{SOCIAL}_values.tif",
-        pop_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_ghs-pop.tif",
+        pop_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_worldpop_total.tif",
         mask_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_surface_water.tif",
         risk_file="data/results/flood_risk/countries/{ISO3}/{ISO3}_{MODEL}-flood-risk_protected_AAR_V-{VULN_CURVE}.tif",
     output:
