@@ -162,43 +162,63 @@ logging.info(f"Mid cost: {costs['adaptation_cost_mid']:.2f} million USD")
 logging.info(f"Maximum cost: {costs['adaptation_cost_max']:.2f} million USD")
 
 logging.info("Create a new FLOPROS layer with adaptation incorporated.")
-# Create a new GeoDataFrame for the adapted FLOPROS layer
-# Grab layers that fall within urbanization class, have a river inside them, and have FLOPROS below the specified return period
+
+# Select admin regions eligible for protection.
+# Do NOT filter based on admin-level modal FLOPROS because individual
+# raster cells may have higher or lower protection than the regional mode.
 filtered_urbanization = urbanization[
     (urbanization['DEGURBA_L2'] >= int(urban_class)) &
-    (urbanization['FLOPROS'] < float(rp)) &
     (urbanization['river_length_m'] > 0)
 ]
+
 if len(filtered_urbanization) > 0:
     with rasterio.open(flopros_path) as src:
-        adaptation_raster = src.read(1).astype(np.float32)  # start with a copy of original FLOPROS raster
+
+        # Start with the original FLOPROS raster
+        adaptation_raster = src.read(1).astype(np.float32)
         profile = src.profile.copy()
 
-        # Create shapes for rasterization (geometry and value pairs)
-        shapes = []
-        for idx, row in filtered_urbanization.iterrows():
-            shapes.append((row.geometry, float(rp)))
+        # Rasterise selected admin regions using the proposed RP
+        shapes = [
+            (row.geometry, float(rp))
+            for _, row in filtered_urbanization.iterrows()
+        ]
 
-        # Burn the new RP values into the adaptation raster
         burned = rasterize(
             shapes,
             out_shape=adaptation_raster.shape,
             transform=src.transform,
             fill=0,
-            default_value=float(rp),  # Use the specified return period as the default value
             dtype=np.float32
         )
 
-        # Update adaptation raster (keeping original values where no new RP was burned)
-        adaptation_raster = np.where(burned > 0, burned, adaptation_raster)
+        # Pixels inside selected adaptation areas
+        adaptation_mask = burned > 0
 
-        # Update profile for output
+        # Don't modify NoData pixels
+        if src.nodata is not None:
+            if np.isnan(src.nodata):
+                adaptation_mask &= ~np.isnan(adaptation_raster)
+            else:
+                adaptation_mask &= adaptation_raster != src.nodata
+
+        # Protection can only increase, never decrease
+        adaptation_raster[adaptation_mask] = np.maximum(
+            adaptation_raster[adaptation_mask],
+            burned[adaptation_mask]
+        )
+
         profile.update(dtype=rasterio.float32, compress='lzw')
 
         with rasterio.open(output_path, 'w', **profile) as dst:
             dst.write(adaptation_raster, 1)
+
 else:
-    logging.info("No admin regions met the filtering criteria - write out original FLOPROS raster.")
+    logging.info(
+        "No admin regions met the filtering criteria - "
+        "write out original FLOPROS raster."
+    )
+
     with rasterio.open(flopros_path) as src:
         with rasterio.open(output_path, 'w', **src.profile) as dst:
             dst.write(src.read(1), 1)
