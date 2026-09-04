@@ -23,7 +23,8 @@ rule merge_gfd:
     This rule merges GFD rasters into one global file
     """
     input:
-        merge_gfd_folder="data/inputs/gfd/prep/"
+        merge_gfd_folder="data/inputs/gfd/prep/",
+        flood_ids="config/gfd_{TYPE}.txt"
     output:
         merge_gfd_file="data/inputs/gfd/merged/gfd_all_{TYPE}.tif"
     wildcard_constraints:
@@ -36,7 +37,9 @@ rule merge_temporal_gfd:
     This rule merges GFD rasters into annual files for coastal and inland flooding
     """
     input:
-        merge_gfd_folder="data/inputs/gfd/prep/{TYPE}/"
+        merge_gfd_folder="data/inputs/gfd/prep/{TYPE}/",
+        epoch_ids="config/gfd_{YEAR}.txt",
+        flood_ids="config/gfd_{TYPE}.txt"
     output:
         merge_temporal_gfd_file="data/inputs/gfd/merged/gfd_{YEAR}_{TYPE}.tif"
     wildcard_constraints:

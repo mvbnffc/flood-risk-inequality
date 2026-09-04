@@ -13,6 +13,7 @@ from tqdm import tqdm
 if __name__ == "__main__":
     try:
         input_path: str = snakemake.input["merge_gfd_folder"]
+        flood_ids: str = snakemake.input["flood_ids"]
         output_path: str = snakemake.output["merge_gfd_file"]
         flood_type: str = snakemake.wildcards["TYPE"]
     except:
@@ -69,21 +70,26 @@ def pad_and_add_raster(src, global_raster, row_offset, col_offset, global_extent
 ###########################################################
 
 logging.info("Reading raster file names.")
-raster_files = glob.glob(os.path.join(input_path, "*.tif"))
+all_raster_files = glob.glob(os.path.join(input_path, "*.tif"))
+
+if not all_raster_files:
+    raise FileNotFoundError(f"No prepared GFD rasters found in {input_path}")
+
+# Give every flood type the same global grid.
+logging.info("Calculating common global extent.")
+global_extent = get_global_extent(all_raster_files)
+global_width = int(np.ceil((global_extent[2] - global_extent[0])/raster_resolution))
+global_height = int(np.ceil((global_extent[3] - global_extent[1])/raster_resolution))
+with rasterio.open(all_raster_files[0]) as template_src:
+    global_crs = template_src.crs
+
 
 logging.info(f"Selecting {flood_type} GFD files to merge.")
-gfd_ids = []
-with open(f"config/gfd_{flood_type}.txt", "r") as f:
-    for line in f.readlines():
-        gfd_ids.append(line.strip())
-
-raster_files = [file for file in raster_files if any(gfd_id in os.path.basename(file) for gfd_id in gfd_ids)]
+with open(flood_ids, "r") as f:
+    gfd_ids = {line.strip() for line in f if line.strip()}
+expected_filenames = {f"DFO_{gfd_id}.tif" for gfd_id in gfd_ids}
+raster_files = [file for file in raster_files if os.path.basename(file) in expected_filenames]
 logging.info(f"Selected {len(raster_files)} {flood_type} GFD files for merging.")
-
-logging.info("Calculate global extent.")
-global_extent = get_global_extent(raster_files)
-global_width = int(np.ceil((global_extent[2] - global_extent[0])) / raster_resolution)
-global_height = int(np.ceil((global_extent[3] - global_extent[1])) / raster_resolution)
 
 logging.info("Initialize the global raster")
 global_raster = np.zeros((global_height, global_width), dtype=np.int16)

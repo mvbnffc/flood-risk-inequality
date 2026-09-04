@@ -13,6 +13,8 @@ from tqdm import tqdm
 if __name__ == "__main__":
     try:
         input_path: str = snakemake.input["merge_gfd_folder"]
+        year_ids: str = snakemake.input["epoch_ids"]
+        flood_ids: str = snakemake.input["flood_ids"]
         output_path:  str = snakemake.output["merge_temporal_gfd_file"]
         flood_type: str = snakemake.wildcards["TYPE"]
         epoch: str = snakemake.wildcards["YEAR"]
@@ -65,52 +67,115 @@ def pad_and_add_raster(src, global_raster, row_offset, col_offset, global_extent
     # Add the padded raster to the global raster
     global_raster += padded_raster
 
+def read_ids(path):
+    with open(path, "r") as f:
+        return {
+            line.strip()
+            for line in f
+            if line.strip()
+        }
+
+###########################################################
 ###########################################################
 
 logging.info("Reading raster file names.")
 raster_files = glob.glob(os.path.join(input_path, "*.tif"))
 
-logging.info("Calculate global extent.")
+if not raster_files:
+    raise FileNotFoundError(f"No prepared GFD rasters found in {input_path}")
+
+# Use all prepared rasters to define a common global grid for every
+# year and flood type.
+logging.info("Calculating global extent.")
 global_extent = get_global_extent(raster_files)
-global_width = int(np.ceil((global_extent[2] - global_extent[0])) / raster_resolution)
-global_height = int(np.ceil((global_extent[3] - global_extent[1])) / raster_resolution)
 
-logging.info("Initialize the global raster")
-global_raster = np.zeros((global_height, global_width), dtype=np.int16)
+global_width = int(
+    np.ceil(
+        (global_extent[2] - global_extent[0]) / raster_resolution
+    )
+)
+global_height = int(
+    np.ceil(
+        (global_extent[3] - global_extent[1]) / raster_resolution
+    )
+)
 
-logging.info(f"Selecting GFD files for {epoch} and {flood_type} flooding.")
-epoch_ids = []
-with open(f"config/gfd_{epoch}.txt", "r") as f:
-    for line in f.readlines():
-        epoch_ids.append(line.strip())
+with rasterio.open(raster_files[0]) as template_src:
+    global_crs = template_src.crs
 
-type_ids = []
-with open(f"config/gfd_{flood_type}.txt", "r") as f:
-    for line in f.readlines():
-        type_ids.append(line.strip())
+logging.info("Reading year and flood-type event IDs.")
+epoch_ids = read_ids(year_ids)
+type_ids = read_ids(flood_ids)
+gfd_ids = epoch_ids & type_ids
 
-gfd_ids = list(set(epoch_ids) & set(type_ids))  # Intersection of both lists
+expected_filenames = {
+    f"DFO_{gfd_id}.tif"
+    for gfd_id in gfd_ids
+}
 
-logging.info(f"Processing {len(gfd_ids)} rasters and merging into global raster.")
-for file in tqdm(raster_files):
-    if any(gfd_id in os.path.basename(file) for gfd_id in gfd_ids):
-        with rasterio.open(file) as src:
-            row_offset, col_offset = calculate_offsets(src.bounds, global_extent, src.transform)
-            pad_and_add_raster(src, global_raster, row_offset, col_offset, global_extent, src.transform)
+available_files = {
+    os.path.basename(file): file
+    for file in raster_files
+}
 
-logging.info("Save the global rasters.")
-with rasterio.open(output_path,
-                    'w',
-                    driver='GTiff',
-                    width=global_width,
-                    height=global_height,
-                    count=1,
-                    dtype=global_raster.dtype,
-                    crs=src.crs,
-                    transform=rasterio.transform.from_origin(global_extent[0], global_extent[3], raster_resolution, raster_resolution),
-                    compress="deflate",
-                    predictor=2,
-                    ) as dst:
+missing_files = expected_filenames - available_files.keys()
+if missing_files:
+    raise FileNotFoundError(
+        f"{len(missing_files)} expected GFD rasters were not found. "
+        f"Examples: {sorted(missing_files)[:10]}"
+    )
+
+selected_raster_files = [
+    available_files[filename]
+    for filename in sorted(expected_filenames)
+]
+
+logging.info(
+    f"Selected {len(selected_raster_files)} rasters for "
+    f"{epoch} {flood_type} flooding."
+)
+
+logging.info("Initializing global raster.")
+global_raster = np.zeros(
+    (global_height, global_width),
+    dtype=np.int16,
+)
+
+for file in tqdm(selected_raster_files):
+    with rasterio.open(file) as src:
+        row_offset, col_offset = calculate_offsets(
+            src.bounds,
+            global_extent,
+            src.transform,
+        )
+        pad_and_add_raster(
+            src,
+            global_raster,
+            row_offset,
+            col_offset,
+            global_extent,
+            src.transform,
+        )
+
+logging.info("Saving global raster.")
+with rasterio.open(
+    output_path,
+    "w",
+    driver="GTiff",
+    width=global_width,
+    height=global_height,
+    count=1,
+    dtype=global_raster.dtype,
+    crs=global_crs,
+    transform=rasterio.transform.from_origin(
+        global_extent[0],
+        global_extent[3],
+        raster_resolution,
+        raster_resolution,
+    ),
+    compress="deflate",
+    predictor=2,
+) as dst:
     dst.write(global_raster, 1)
 
 logging.info("Done.")
