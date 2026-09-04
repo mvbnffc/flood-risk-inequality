@@ -168,7 +168,8 @@ logging.info("Create a new FLOPROS layer with adaptation incorporated.")
 # raster cells may have higher or lower protection than the regional mode.
 filtered_urbanization = urbanization[
     (urbanization['DEGURBA_L2'] >= int(urban_class)) &
-    (urbanization['river_length_m'] > 0)
+    (urbanization['river_length_m'] > 0) &
+    (urbanization['FLOPROS'] < float(rp)) # skip units for which there are no costs
 ]
 
 if len(filtered_urbanization) > 0:
@@ -194,6 +195,7 @@ if len(filtered_urbanization) > 0:
 
         # Pixels inside selected adaptation areas
         adaptation_mask = burned > 0
+        adaptation_mask &= adaptation_raster > 0 # treat 0 as no-data
 
         # Don't modify NoData pixels
         if src.nodata is not None:
