@@ -88,7 +88,14 @@ logging.info(f"Selecting {flood_type} GFD files to merge.")
 with open(flood_ids, "r") as f:
     gfd_ids = {line.strip() for line in f if line.strip()}
 expected_filenames = {f"DFO_{gfd_id}.tif" for gfd_id in gfd_ids}
-raster_files = [file for file in raster_files if os.path.basename(file) in expected_filenames]
+available_files = {os.path.basename(file): file for file in all_raster_files}
+missing_files = expected_filenames - available_files.keys()
+if missing_files:
+    raise 
+    ileNotFoundError(f"{len(missing_files)} expected GFD rasters are missing. "
+        f"Examples: {sorted(missing_files)[:10]}"
+    )
+raster_files = [available_files[filename] for filename in sorted(expected_filenames)]
 logging.info(f"Selected {len(raster_files)} {flood_type} GFD files for merging.")
 
 logging.info("Initialize the global raster")
