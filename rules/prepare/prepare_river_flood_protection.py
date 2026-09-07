@@ -70,20 +70,14 @@ modes = [] # collect the modes for each region in this list
 with rasterio.open(flopros_path) as src:
     for idx, row in urbanization.iterrows():
         try:
-            # Extract raster values within polygon
-            out_image, out_transform = mask(src, [row.geometry], crop=True, nodata=src.nodata)
-            # Get non-nodata values
-            valid_data = out_image[out_image != src.nodata]
-            valid_data = valid_data[~np.isnan(valid_data)]
+            out_image, _ = mask(src, [row.geometry], crop=True, filled=False)
+            arr = out_image[0].compressed()        # drops the bbox padding
+            arr = arr[arr > 0]                     # 0 = no FLOPROS data, not "unprotected"
 
-            if valid_data.size > 0:
-                # Find mode 
-                counter = Counter(valid_data.flatten())
-                mode_value = counter.most_common(1)[0][0]
-            else:
-                mode_value = 0
+            mode_value = float(np.bincount(...)) if False else (
+                float(Counter(arr.tolist()).most_common(1)[0][0]) if arr.size > 0 else 0
+            )
             urbanization.at[idx, 'FLOPROS'] = mode_value
-
             modes.append(mode_value)
         except Exception as e:
             logging.error(f"Error processing row {idx} for GID {row[f'GID_{gadm_level}']}: {e}")
