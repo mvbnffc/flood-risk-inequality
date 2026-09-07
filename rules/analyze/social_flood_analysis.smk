@@ -503,7 +503,7 @@ rule inequality_metrics_observed_temporal:
 FLOOD_TYPES = ['rain', 'snow', 'dam', 'storm', 'combined']
 POP_YEARS = ['2000', '2005', '2010', '2015', '2020']
 MODELS = ['gfd', 'gfd_binary']
-SOCIALS = ['rwi']
+SOCIALS = ['frwi']
 
 rule pop_temporal_observed:
     input:
