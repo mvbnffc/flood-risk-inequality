@@ -92,6 +92,6 @@ iso_codes:
 - "UKR"
 - "UZB"
 - "VNM"
-- "ZAF"
+# - "ZAF" # mem
 - "ZMB"
 - "ZWE"
