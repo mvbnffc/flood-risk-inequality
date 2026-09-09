@@ -119,6 +119,7 @@ for idx, region in tqdm(admin_areas.iterrows()):
     rural_df = df[df['urban'] < 21]
 
     # Calculate rural and urban population coverage
+    total_pop = df['pop'].sum()
     urban_pop = urban_df['pop'].sum()
     rural_pop = rural_df['pop'].sum()
 
