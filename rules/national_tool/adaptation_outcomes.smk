@@ -107,11 +107,12 @@ rule tool_inequality_metrics_protected:
     This rule calcualtes two inequality metrics at the specified administrative level. FLOPROS protection is ON.
     Inequality metrics:
         - Concentration Index (CI) - understand the inequality of flood risk across the wealth distribution
-        - Quantile Ratio (QR) - understand the tail inequality (20:80)
+        - Quantile Ratio (QR) - compare national wealth Q5 and Q1 exposure
     """
     input:
         admin_areas = "data/inputs/boundaries/{ISO3}/geobounds_{ISO3}.gpkg",
         social_file="data/results/national_tooling/countries/{ISO3}/{ISO3}_pop_{SOCIAL}_values.tif",
+        wealth_quintiles="data/results/national_tooling/countries/{ISO3}/{ISO3}_wealth_quintiles.tif",
         pop_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_worldpop_total.tif",
         mask_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_surface_water.tif",
         risk_file="data/results/flood_risk/countries/{ISO3}/{ISO3}_{MODEL}-flood-risk_protected_AAR_V-{VULN_CURVE}.tif",
@@ -135,11 +136,12 @@ rule tool_inequality_metrics_flood_protection:
     Adaptation parameters required as input are RP protection and min level of urbanization to protect.
     Inequality metrics:
         - Concentration Index (CI) - understand the inequality of flood risk across the wealth distribution
-        - Quantile Ratio (QR) - understand the tail inequality (20:80)
+        - Quantile Ratio (QR) - compare national wealth Q5 and Q1 exposure
     """
     input:
         admin_areas = "data/inputs/boundaries/{ISO3}/geobounds_{ISO3}.gpkg",
         social_file="data/results/national_tooling/countries/{ISO3}/{ISO3}_pop_{SOCIAL}_values.tif",
+        wealth_quintiles="data/results/national_tooling/countries/{ISO3}/{ISO3}_wealth_quintiles.tif",
         pop_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_worldpop_total.tif",
         mask_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_surface_water.tif",
         risk_file="data/results/flood_risk/countries/{ISO3}/{ISO3}_{MODEL}-flood-risk_adapted_AAR_V-{VULN_CURVE}_fp_rp{RP}_duc{urban_class}.tif",
@@ -164,11 +166,12 @@ rule tool_inequality_metrics_relocation:
     Adaptation parameter required as input is the max level of urbanization to relocate people from.
     Inequality metrics:
         - Concentration Index (CI) - understand the inequality of flood risk across the wealth distribution
-        - Quantile Ratio (QR) - understand the tail inequality (20:80)
+        - Quantile Ratio (QR) - compare national wealth Q5 and Q1 exposure
     """
     input:
         admin_areas = "data/inputs/boundaries/{ISO3}/geobounds_{ISO3}.gpkg",
         social_file="data/results/national_tooling/countries/{ISO3}/{ISO3}_pop_{SOCIAL}_values.tif",
+        wealth_quintiles="data/results/national_tooling/countries/{ISO3}/{ISO3}_wealth_quintiles.tif",
         pop_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_worldpop_total.tif",
         mask_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_surface_water.tif",
         risk_file="data/results/flood_risk/countries/{ISO3}/{ISO3}_{MODEL}-flood-risk_adapted_AAR_V-{VULN_CURVE}_rl_duc{urban_class}.tif",
@@ -192,11 +195,12 @@ rule tool_inequality_metrics_dry_proofing:
     This rule calcualtes two inequality metrics at the specified administrative level for the dry proofing adaptation scenario.
     Inequality metrics:
         - Concentration Index (CI) - understand the inequality of flood risk across the wealth distribution
-        - Quantile Ratio (QR) - understand the tail inequality (20:80)
+        - Quantile Ratio (QR) - compare national wealth Q5 and Q1 exposure
     """
     input:
         admin_areas = "data/inputs/boundaries/{ISO3}/geobounds_{ISO3}.gpkg",
         social_file="data/results/national_tooling/countries/{ISO3}/{ISO3}_pop_{SOCIAL}_values.tif",
+        wealth_quintiles="data/results/national_tooling/countries/{ISO3}/{ISO3}_wealth_quintiles.tif",
         pop_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_worldpop_total.tif",
         mask_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_surface_water.tif",
         risk_file="data/results/flood_risk/countries/{ISO3}/{ISO3}_{MODEL}-flood-risk_adapted_AAR_V-{VULN_CURVE}_dp.tif",
