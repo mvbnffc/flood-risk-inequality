@@ -373,38 +373,6 @@ Test with
 snakemake -c1 data/results/social_flood/countries/KEN/inequality_metrics/KEN_ADM0_decomposed_metrics_gfd-flood_S-rwi.gpkg
 """
 
-rule inequality_metrics_observed:
-    """
-    This rule calcualtes two inequality metrics at the specified administrative level. For observed flooding datasets
-    Inequality metrics:
-        - Concentration Index (CI) - understand the inequality of flood risk across the wealth distribution
-        - Quantile Ratio (QR) - understand the tail inequality (20:80)
-    """
-    input:
-        admin_areas = "data/inputs/boundaries/{ISO3}/geobounds_{ISO3}.gpkg",
-        social_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_{SOCIAL}.tif",
-        pop_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_ghs-pop_{POP_YEAR}.tif",
-        mask_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_surface_water.tif",
-        risk_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_{MODEL}_{FLOOD_YEAR}_{TYPE}-flood.tif",
-    output:
-        regional_CI = "data/results/social_flood/countries/{ISO3}/inequality_metrics/{ISO3}_{ADMIN_SLUG}_metrics_{MODEL}_{FLOOD_YEAR}_{TYPE}-flood_S-{SOCIAL}_P-{POP_YEAR}.gpkg",
-    wildcard_constraints:
-        TYPE="rain|snow|dam|storm|combined",
-        FLOOD_YEAR="all|early|late|2000|2001|2002|2003|2004|2005|2006|2007|2008|2009|2010|2011|2012|2013|2014|2015|2016|2017|2018",
-        POP_YEAR="2000|interpolated-2001|interpolated-2002|interpolated-2003|interpolated-2004|"
-                 "2005|interpolated-2006|interpolated-2007|interpolated-2008|interpolated-2009|"
-                 "2010|interpolated-2011|interpolated-2012|interpolated-2013|interpolated-2014|"
-                 "2015|interpolated-2016|interpolated-2017|interpolated-2018|2020",
-        MODEL="gfd|gfd_binary",
-        SOCIAL="rwi|gdp|frwi",
-        ADMIN_SLUG="ADM0|ADM1|ADM2"
-    script:
-        "./inequality_metrics.py"
-"""
-Test with
-snakemake -c1 data/results/social_flood/countries/KEN/inequality_metrics/KEN_ADM0_metrics_gfd_all_coastal-flood_S-rwi_P-2015.gpkg
-"""
-
 rule inequality_metrics_observed_urban_rural:
     """
     This rule calcualtes the urban and rural CI metrics and quintile risk numbers.
