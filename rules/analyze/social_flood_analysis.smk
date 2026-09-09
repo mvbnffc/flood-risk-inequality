@@ -385,7 +385,7 @@ rule inequality_metrics_observed_urban_rural:
         mask_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_surface_water.tif",
         risk_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_{MODEL}_{FLOOD_YEAR}_{TYPE}-flood.tif",
     output:
-        regional_CI = "data/results/social_flood/countries/{ISO3}/inequality_metrics/{ISO3}_{ADMIN_SLUG}_urban-rural_metrics_{MODEL}_{FLOOD_YEAR}-{TYPE}-flood_S-{SOCIAL}_P-{POP_YEAR}.gpkg",
+        regional_CI = "data/results/social_flood/countries/{ISO3}/inequality_metrics/{ISO3}_{ADMIN_SLUG}_urban-rural_metrics_{MODEL}_{FLOOD_YEAR}_{TYPE}-flood_S-{SOCIAL}_P-{POP_YEAR}.gpkg",
     wildcard_constraints:
         TYPE="rain|snow|dam|storm|combined",
         FLOOD_YEAR="all|early|late|2000|2001|2002|2003|2004|2005|2006|2007|2008|2009|2010|2011|2012|2013|2014|2015|2016|2017|2018",
@@ -400,7 +400,7 @@ rule inequality_metrics_observed_urban_rural:
         "./inequality_metrics_urban_rural.py"
 """
 Test with
-snakemake -c1 data/results/social_flood/countries/KEN/inequality_metrics/KEN_ADM0_urban-rural_metrics_gfd-flood_S-rwi.gpkg
+snakemake -c1 data/results/social_flood/countries/KEN/inequality_metrics/KEN_ADM0_urban-rural_metrics_gfd_all-flood_S-rwi.gpkg
 """
 
 rule inequality_metrics_observed_admin_decomposed:
