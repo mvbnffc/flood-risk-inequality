@@ -3,7 +3,7 @@ This script calculates population flood-risk metrics for a country and sums them
 
 It calculates exposed population for:
 - all binary RP exposure maps;
-- binary AAR exposure maps, protected and unprotected;
+- continuous AAR exposure maps, protected and unprotected;
 - all population demographic layers;
 - each wealth quintile, using the total population raster and wealth quintile raster.
 
@@ -221,9 +221,13 @@ for risk_name, risk_arr in risk_maps.items():
 
     logging.info(f"Processing risk map: {risk_name}")
 
-    # Binary exposure map:
-    # any value > 0 is treated as exposed.
-    exposed_mask = risk_arr > 0
+    # Return-period maps are binary exposure maps. AAR maps contain the
+    # annual exposure fraction and must retain their continuous values.
+    if risk_name in {"AAR", "AAR_protected"}:
+        exposure_fraction = risk_arr
+    else:
+        exposure_fraction = (risk_arr > 0).astype(np.float64)
+
     risk_valid_mask = ~np.isnan(risk_arr)
 
     for pop_name, pop_arr in population_layers.items():
@@ -238,14 +242,14 @@ for risk_name, risk_arr in risk_maps.items():
         )
 
         total_pop_arr = pop_arr.copy()
-        exposed_pop_arr = np.where(exposed_mask, pop_arr, 0)
+        exposed_pop_arr = exposure_fraction * pop_arr
 
         # Set invalid areas to 0 for faster summing.
         total_pop_arr[~global_valid_mask] = 0
         exposed_pop_arr[~global_valid_mask] = 0
 
         total_pixel_arr = global_valid_mask.astype(np.float64)
-        exposed_pixel_arr = (global_valid_mask & exposed_mask).astype(np.float64)
+        exposed_pixel_arr = np.where(global_valid_mask, exposure_fraction, 0)
 
         # Flatten arrays.
         flat_total_pop = total_pop_arr.flatten()
@@ -340,14 +344,14 @@ for risk_name, risk_arr in risk_maps.items():
         )
 
         total_pop_arr = wealth_pop_arr.copy()
-        exposed_pop_arr = np.where(exposed_mask, wealth_pop_arr, 0)
+        exposed_pop_arr = exposure_fraction * wealth_pop_arr
 
         # Set invalid areas to 0 for faster summing.
         total_pop_arr[~global_valid_mask] = 0
         exposed_pop_arr[~global_valid_mask] = 0
 
         total_pixel_arr = global_valid_mask.astype(np.float64)
-        exposed_pixel_arr = (global_valid_mask & exposed_mask).astype(np.float64)
+        exposed_pixel_arr = np.where(global_valid_mask, exposure_fraction, 0)
 
         # Flatten arrays.
         flat_total_pop = total_pop_arr.flatten()
