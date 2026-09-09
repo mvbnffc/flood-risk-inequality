@@ -46,3 +46,11 @@ rule admin_population_demographic_summary:
         ADMIN_SLUG="ADM0|ADM1|ADM2"
     script:
         "./sum_admin_population_demographics.py"
+
+ADMS = ['ADM0', 'ADM1', 'ADM2']
+ISO3s = ['KEN', 'MOZ']
+
+rule pop_exposure_bulk:
+    input:
+        expand("data/results/national_tooling/countries/{ISO3}/{ISO3}_{ADM}_jrc_population_risk_metrics.gpkg",
+            ISO3=ISO3s, ADM=ADMS)
