@@ -117,9 +117,12 @@ for idx, region in tqdm(admin_areas.iterrows()):
     wealth_quintiles_flat = wealth_quintiles_clip[mask]
     # Mask out zero-populatoin cells
     valid = pop_flat > 0
-    pop_flat = pop_flat[valid]
-    social_flat = social_flat[valid]
-    risk_flat = risk_flat[valid]
+    # Use float64 for cumulative population ranks and all CI arithmetic.
+    # Float32 cumulative sums lose small WorldPop cell weights once the
+    # national running total becomes large, biasing the fractional ranks.
+    pop_flat = pop_flat[valid].astype(np.float64, copy=False)
+    social_flat = social_flat[valid].astype(np.float64, copy=False)
+    risk_flat = risk_flat[valid].astype(np.float64, copy=False)
     wealth_quintiles_flat = wealth_quintiles_flat[valid]
 
     # Calculate total flood risk (pop * risk) for the region
