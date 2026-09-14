@@ -17,13 +17,13 @@ rule inequality_metrics:
     input:
         admin_areas = "data/inputs/boundaries/{ISO3}/geobounds_{ISO3}.gpkg",
         social_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_{SOCIAL}.tif",
-        pop_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_ghs-pop.tif",
+        pop_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_ghs-pop_2020.tif",
         mask_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_surface_water.tif",
         risk_file="data/results/flood_risk/countries/{ISO3}/{ISO3}_{MODEL}-flood-risk_{TYPE}_V-{VULN_CURVE}.tif",
     output:
         regional_CI = "data/results/social_flood/countries/{ISO3}/inequality_metrics/{ISO3}_{ADMIN_SLUG}_metrics_{MODEL}-flood_{TYPE}_V-{VULN_CURVE}_S-{SOCIAL}.gpkg",
     wildcard_constraints:
-        MODEL="giri|jrc|wri|deltares-coastal",
+        MODEL="giri|jrc|wri|deltares-coastal|wri-coastal",
         TYPE="AAR|RP100",
         SOCIAL="rwi|gdp|frwi",
         VULN_CURVE="BER|JRC|EXP",
@@ -45,14 +45,14 @@ rule inequality_metrics_decomposed:
     input:
         admin_areas = "data/inputs/boundaries/{ISO3}/geobounds_{ISO3}.gpkg",
         social_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_{SOCIAL}.tif",
-        pop_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_ghs-pop.tif",
+        pop_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_ghs-pop_2020.tif",
         urban_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_ghs-mod_fixed.tif",
         mask_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_surface_water.tif",
         risk_file="data/results/flood_risk/countries/{ISO3}/{ISO3}_{MODEL}-flood-risk_{TYPE}_V-{VULN_CURVE}.tif",
     output:
         regional_CI = "data/results/social_flood/countries/{ISO3}/inequality_metrics/{ISO3}_{ADMIN_SLUG}_decomposed_metrics_{MODEL}-flood_{TYPE}_V-{VULN_CURVE}_S-{SOCIAL}.gpkg",
     wildcard_constraints:
-        MODEL="giri|jrc|wri|deltares-coastal",
+        MODEL="giri|jrc|wri|deltares-coastal|wri-coastal",
         TYPE="AAR|RP100",
         SOCIAL="rwi|gdp",
         VULN_CURVE="BER|JRC|EXP",
@@ -74,13 +74,13 @@ rule inequality_metrics_protected:
     input:
         admin_areas = "data/inputs/boundaries/{ISO3}/geobounds_{ISO3}.gpkg",
         social_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_{SOCIAL}.tif",
-        pop_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_ghs-pop.tif",
+        pop_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_ghs-pop_2020.tif",
         mask_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_surface_water.tif",
         risk_file="data/results/flood_risk/countries/{ISO3}/{ISO3}_{MODEL}-flood-risk_protected_AAR_V-{VULN_CURVE}.tif",
     output:
         regional_CI = "data/results/social_flood/countries/{ISO3}/inequality_metrics/{ISO3}_{ADMIN_SLUG}_metrics_{MODEL}-flood_protected_AAR_V-{VULN_CURVE}_S-{SOCIAL}.gpkg",
     wildcard_constraints:
-        MODEL="giri|jrc|wri|deltares-coastal",
+        MODEL="giri|jrc|wri|deltares-coastal|wri-coastal",
         VULN_CURVE="BER|JRC|EXP",
         SOCIAL="rwi|gdp|frwi",
         ADMIN_SLUG="ADM0|ADM1|ADM2"
