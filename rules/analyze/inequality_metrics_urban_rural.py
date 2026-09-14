@@ -16,6 +16,44 @@ import numpy as np
 import shapely
 from tqdm import tqdm
 
+
+def calculate_total_rank_CIs(df):
+    """Return urban/rural exposure CIs using the full area's wealth ranks.
+
+    At ADM0 the reference is the analysed national population; at other admin
+    levels it is the population of the current region. Keep the same sorting
+    and population-weighted midpoint ranks as calculate_CI below.
+
+    Each result is the ordinary full-population CI of a component outcome:
+    urban exposure with rural exposure set to zero, or vice versa. Equivalently,
+    C_g = 2 * sum_g(pop * flood * total_rank) / sum_g(pop * flood) - 1.
+    Do not recalculate ranks or centre them on the subgroup's mean rank.
+
+    These measure concentration across the full wealth distribution, including
+    where each settlement group lies in that distribution. They are distinct
+    from within-group CI Urban/CI Rural. Weighting them by subgroup shares of
+    total exposure recovers the full CI (up to floating-point precision).
+    A subgroup with no exposure has an undefined CI and returns NaN.
+    """
+    ranked = df.sort_values(by="social", ascending=True)
+    total_pop = ranked['pop'].sum()
+    if total_pop == 0:
+        return np.nan, np.nan
+
+    total_rank = (ranked['pop'].cumsum() - 0.5 * ranked['pop']) / total_pop
+    exposure = ranked['pop'] * ranked['flood']
+    indices = []
+    for mask in (ranked['urban'] >= 21, ranked['urban'] < 21):
+        group_exposure = exposure[mask].sum()
+        if group_exposure == 0:
+            indices.append(np.nan)
+        else:
+            indices.append(
+                2 * (exposure[mask] * total_rank[mask]).sum() / group_exposure - 1
+            )
+    return tuple(indices)
+
+
 if __name__ == "__main__":
 
     try:
@@ -155,6 +193,7 @@ for idx, region in tqdm(admin_areas.iterrows()):
     CI = calculate_CI(df)
     CI_urban = calculate_CI(urban_df)
     CI_rural = calculate_CI(rural_df)
+    CI_urban_total, CI_rural_total = calculate_total_rank_CIs(df)
 
     def calculate_flood_risk_per_quantile(df, quantile=0.2):
         """
@@ -202,6 +241,8 @@ for idx, region in tqdm(admin_areas.iterrows()):
         "CI": CI,
         "CI Urban": CI_urban,
         "CI Rural": CI_rural,
+        "CI Urban (total)": CI_urban_total,
+        "CI Rural (total)": CI_rural_total,
         "Population": total_pop,
         "Urban Population": urban_pop,
         "Rural Population": rural_pop,
