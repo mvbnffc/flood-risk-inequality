@@ -25,7 +25,7 @@ rule inequality_metrics:
     wildcard_constraints:
         MODEL="giri|jrc|wri|deltares-coastal",
         TYPE="AAR|RP100",
-        SOCIAL="rwi|gdp",
+        SOCIAL="rwi|gdp|frwi",
         VULN_CURVE="BER|JRC|EXP",
         ADMIN_SLUG="ADM0|ADM1|ADM2"
     script:
@@ -82,7 +82,7 @@ rule inequality_metrics_protected:
     wildcard_constraints:
         MODEL="giri|jrc|wri|deltares-coastal",
         VULN_CURVE="BER|JRC|EXP",
-        SOCIAL="rwi|gdp",
+        SOCIAL="rwi|gdp|frwi",
         ADMIN_SLUG="ADM0|ADM1|ADM2"
     script:
         "./inequality_metrics.py"
