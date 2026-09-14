@@ -16,3 +16,14 @@ rule download_wri_flood:
         mkdir -p $(dirname {output.flood_file})
         wget -nc https://aqueduct.wridata.org/AqueductFloods20/inunriver_historical_000000000WATCH_1980_rp0{wildcards.RP}.tif -O {output.flood_file}
         """
+
+rule download_wri_coastal:
+    output:
+        flood_file="data/inputs/flood/WRI_coastal/inuncoast_historical_nosub_hist_rp0{RP}.tif"
+    wildcard_constraints:
+        RP="0002|0005|0010|0025|0050|0100|0250|0500|1000"
+    shell:
+        """
+        mkdir -p $(dirname {output.flood_file})
+        wget -nc https://aqueduct.wridata.org/AqueductFloods20/inuncoast_historical_nosub_hist_rp0{wildcards.RP}.tif -O {output.flood_file}
+        """
