@@ -480,7 +480,7 @@ rule dfo_event_analysis:
     Reporting various metrics and returning a CSV file of results.
     """
     input:
-        rwi_file = lambda wc: expand("data/inputs/analysis/countries/{ISO3}/{ISO3}_rwi.tif", ISO3=get_event_iso3s(wc)),
+        rwi_file = lambda wc: expand("data/inputs/analysis/countries/{ISO3}/{ISO3}_frwi.tif", ISO3=get_event_iso3s(wc)),
         pop_file = lambda wc: expand("data/inputs/analysis/countries/{ISO3}/{ISO3}_ghs-pop_{YEAR}.tif", ISO3=get_event_iso3s(wc), YEAR=get_event_pop_year(wc)),
         mask_file = lambda wc: expand("data/inputs/analysis/countries/{ISO3}/{ISO3}_surface_water.tif", ISO3=get_event_iso3s(wc)),
         urban_file= lambda wc: expand("data/inputs/analysis/countries/{ISO3}/{ISO3}_ghs-mod_fixed.tif", ISO3=get_event_iso3s(wc)),
