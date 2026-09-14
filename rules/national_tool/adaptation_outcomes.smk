@@ -292,11 +292,12 @@ ISO3s = ['KEN', 'MOZ']
 ADMS = ['ADM0', 'ADM1', 'ADM2']
 URBANS = [11, 12, 13, 21, 22, 23, 30]
 RPS = [10, 20, 50, 100, 200]
+risk_metrics = ['protected_AAR', 'RP10', 'RP20', 'RP50', 'RP75', 'RP100', 'RP200', 'RP500']
 
 rule base_capstock_bulk:
     input:
-        expand("data/results/national_tooling/countries/{ISO3}/{ISO3}_{ADM}_metrics_jrc-flood_protected_AAR_baseline_capstock.gpkg",
-            ISO3=ISO3s, ADM=ADMS)
+        expand("data/results/national_tooling/countries/{ISO3}/{ISO3}_{ADM}_metrics_jrc-flood_[risk_metric]_baseline_capstock.gpkg",
+            ISO3=ISO3s, ADM=ADMS, risk_metric=risk_metrics)
 
 rule fp_capstock_bulk:
     input:
