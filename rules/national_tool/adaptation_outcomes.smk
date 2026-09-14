@@ -296,7 +296,7 @@ risk_metrics = ['protected_AAR', 'RP10', 'RP20', 'RP50', 'RP75', 'RP100', 'RP200
 
 rule base_capstock_bulk:
     input:
-        expand("data/results/national_tooling/countries/{ISO3}/{ISO3}_{ADM}_metrics_jrc-flood_[risk_metric]_baseline_capstock.gpkg",
+        expand("data/results/national_tooling/countries/{ISO3}/{ISO3}_{ADM}_metrics_jrc-flood_{risk_metric}_baseline_capstock.gpkg",
             ISO3=ISO3s, ADM=ADMS, risk_metric=risk_metrics)
 
 rule fp_capstock_bulk:
