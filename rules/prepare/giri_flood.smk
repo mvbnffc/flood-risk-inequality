@@ -28,7 +28,7 @@ rule clip_giri_flood:
     input:
         raw_flood_file="data/inputs/flood/GIRI/aligned/global_pc_h{RP}glob.tif",
         boundary_file="data/inputs/boundaries/{ISO3}/geobounds_{ISO3}.geojson",
-        pop_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_ghs-pop.tif",
+        pop_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_ghs-pop_2020.tif",
     output:
         trimmed_flood_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_giri-flood_RP{RP}.tif",
     wildcard_constraints:
