@@ -80,13 +80,6 @@ def main(RP2_path, RP_5_path, RP10_path, RP25_path, RP50_path, RP100_path, RP250
     with rasterio.open(flopros_path) as src:
         flopros = src.read(1)
 
-    # Create an empty array for bankful (2-year) flood
-    RP2 = np.zeros_like(flood_maps[0])
-    flood_maps.append(RP2) # insert this array at beginning of list.
-    # Convert to numpy array
-    flood_maps = np.array(flood_maps)
-
-
     logging.info("Reshaping flood maps")
     RPs = np.array([250, 100, 50, 25, 10, 5, 2], dtype="float32") # define return periods
     rows, cols = flopros.shape # for writing back to normal shape later
