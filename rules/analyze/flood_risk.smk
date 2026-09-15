@@ -533,7 +533,7 @@ rule deltares_coastal_average_annual_risk_protected:
         flood_rp_250="data/results/flood_risk/countries/{ISO3}/{ISO3}_deltares-coastal-flood-risk_RP250_V-{VULN_CURVE}.tif",
         flopros="data/inputs/analysis/countries/{ISO3}/{ISO3}_flopros.tif"
     output:
-        flood_aar="data/results/flood_risk/countries/{ISO3}/{ISO3}_deltares-coastal-flood-risk_protected_AAR_V-{VULN_CURVE}.tif"
+        flood_aar_protected="data/results/flood_risk/countries/{ISO3}/{ISO3}_deltares-coastal-flood-risk_protected_AAR_V-{VULN_CURVE}.tif"
     wildcard_constraints:
         VULN_CURVE="BER|JRC|EXP|NRES|INFR",
     script:
