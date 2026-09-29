@@ -238,7 +238,14 @@ for idx, region in tqdm(admin_areas.iterrows()):
     print_ci(CI, contrib)
 
     # Calculate the number of cells where population and rwi overlaps
-    total_pop = np.nansum(pop_clip)
+    total_pop = np.nansum(pop_clip) 
+    duc11_pop = np.nansum(np.where(urban_clip==11, pop_clip, 0))
+    duc12_pop = np.nansum(np.where(urban_clip==12, pop_clip, 0))
+    duc13_pop = np.nansum(np.where(urban_clip==13, pop_clip, 0))
+    duc21_pop = np.nansum(np.where(urban_clip==21, pop_clip, 0))
+    duc22_pop = np.nansum(np.where(urban_clip==22, pop_clip, 0))
+    duc23_pop = np.nansum(np.where(urban_clip==23, pop_clip, 0))    
+    duc30_pop = np.nansum(np.where(urban_clip==30, pop_clip, 0))
     pop_social = np.nansum(np.where(~np.isnan(social_clip), pop_clip, 0))
 
     def safe(comp, code, idx):
@@ -252,6 +259,13 @@ for idx, region in tqdm(admin_areas.iterrows()):
         "Population": total_pop,
         "Population Coverage (%)": (pop_social/total_pop)*100,
         "Total Flood Risk": total_flood_risk,
+        "DUC11 Population": duc11_pop,
+        "DUC12 Population": duc12_pop,
+        "DUC13 Population": duc13_pop,
+        "DUC21 Population": duc21_pop,
+        "DUC22 Population": duc22_pop,
+        "DUC23 Population": duc23_pop,
+        "DUC30 Population": duc30_pop,
         "DUC11 CI": safe(contrib, 11, 1),
         "DUC12 CI": safe(contrib, 12, 1),
         "DUC13 CI": safe(contrib, 13, 1),
