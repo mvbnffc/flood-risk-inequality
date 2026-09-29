@@ -24,7 +24,7 @@ rule inequality_metrics:
         regional_CI = "data/results/social_flood/countries/{ISO3}/inequality_metrics/{ISO3}_{ADMIN_SLUG}_metrics_{MODEL}-flood_{TYPE}_V-{VULN_CURVE}_S-{SOCIAL}.gpkg",
     wildcard_constraints:
         MODEL="giri|jrc|wri|deltares-coastal|wri-coastal",
-        TYPE="AAR|RP100",
+        TYPE="AAR|RP10|RP50|RP100|RP500",
         SOCIAL="rwi|gdp|frwi",
         VULN_CURVE="BER|JRC|EXP",
         ADMIN_SLUG="ADM0|ADM1|ADM2"
@@ -577,3 +577,13 @@ rule observed_decomposed:
     input:
         expand("data/results/social_flood/countries/{ISO3}/inequality_metrics/{ISO3}_ADM0_decomposed_metrics_gfd_all_combined-flood_S-frwi_P-2010.gpkg",
             ISO3=config['iso_codes'])
+
+
+MODELS = ['jrc', 'wri', 'giri']
+VULNS = ['JRC', 'EXP']
+METRICS = ['AAR', 'RP10', 'RP50', 'RP100', 'RP500']
+
+rule river_return_periods:
+    input:
+        expand("data/results/social_flood/countries/{ISO3}/inequality_metrics/{ISO3}_ADM0_metrics_{MODEL}-flood_{METRIC}_V-{VULN}_S-frwi.gpkg",
+            ISO3=config['iso_codes'], MODEL=MODELS, METRIC=METRICS, VULN=VULNS)
