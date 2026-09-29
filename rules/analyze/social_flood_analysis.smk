@@ -572,3 +572,8 @@ rule observed_urban_rural:
     input:
         expand("data/results/social_flood/countries/{ISO3}/inequality_metrics/{ISO3}_ADM0_urban-rural_metrics_gfd_all_combined-flood_S-frwi_P-2010.gpkg",
             ISO3=config['iso_codes'])
+
+rule observed_decomposed:
+    input:
+        expand("data/results/social_flood/countries/{ISO3}/inequality_metrics/{ISO3}_ADM0_decomposed_metrics_gfd_all_combined-flood_S-frwi_P-2010.gpkg",
+            ISO3=config['iso_codes'])
