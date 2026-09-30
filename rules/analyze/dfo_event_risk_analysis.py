@@ -160,7 +160,7 @@ for iso3 in iso3_list:
     flood_flat = flood[mask_areas]
     # Mask out zero-populatoin cells
     valid = pop_flat > 0
-    pop_flat = pop_flat[valid]
+    pop_flat = pop_flat[valid].astype(np.float64)
     rwi_flat = rwi_flat[valid]
     urban_flat = urban_flat[valid]
     flood_flat = flood_flat[valid]
