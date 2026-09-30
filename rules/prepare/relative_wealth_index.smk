@@ -32,3 +32,17 @@ rule temp_rwi_fix:
         pop_rwi_assignment="data/inputs/analysis/countries/{ISO3}/{ISO3}_frwi.tif"
     script:
         "./build_wealth_quintiles.py"
+
+
+rule build_degurba_wealth_quintiles:
+    """Diagnostic wealth quintiles ranked within each national DEGURBA class."""
+    input:
+        pop_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_ghs-pop_{POP_YEAR}.tif",
+        rwi_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_frwi.tif",
+        urban_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_ghs-mod_fixed.tif",
+    output:
+        rural="data/inputs/analysis/countries/{ISO3}/{ISO3}_wealth_quintiles_RUR_P-{POP_YEAR}.tif",
+        towns="data/inputs/analysis/countries/{ISO3}/{ISO3}_wealth_quintiles_TWN_P-{POP_YEAR}.tif",
+        cities="data/inputs/analysis/countries/{ISO3}/{ISO3}_wealth_quintiles_CTY_P-{POP_YEAR}.tif",
+    script:
+        "./build_degurba_wealth_quintiles.py"
