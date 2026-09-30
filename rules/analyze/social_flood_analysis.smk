@@ -613,11 +613,6 @@ rule observed_degurba:
         expand("data/results/social_flood/countries/{ISO3}/inequality_metrics/{ISO3}_ADM0_degurba_metrics_gfd_all_combined-flood_S-frwi_P-2010.gpkg",
             ISO3=config['iso_codes'])
 
-rule observed_degurba:
-    input:
-        expand("data/results/social_flood/countries/{ISO3}/inequality_metrics/{ISO3}_ADM0_degurba_metrics_gfd_all_combined-flood_S-frwi_P-2010.gpkg",
-            ISO3=config['iso_codes'])
-
 rule observed_degurba_adm1:
     input:
         expand("data/results/social_flood/countries/{ISO3}/inequality_metrics/{ISO3}_ADM1_degurba_metrics_gfd_all_combined-flood_S-frwi_P-2010.gpkg",
