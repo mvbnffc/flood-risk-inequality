@@ -232,7 +232,26 @@ if layer_name == "ADM0":
     area_unique_id_col = "shapeName"
 else:
     area_unique_id_col = "shapeID"
-admin_areas = admin_areas[[area_unique_id_col, "geometry"]]
+# Keep shapeName as a label column even when it is not the unique id (ADM1+)
+keep_cols = [area_unique_id_col]
+if "shapeName" in admin_areas.columns and "shapeName" not in keep_cols:
+    keep_cols.append("shapeName")
+keep_cols.append("geometry")
+admin_areas = admin_areas[keep_cols]
+# shapeID is the unique key above ADM0; shapeName is a label only and may repeat
+n_dup_id = int(admin_areas[area_unique_id_col].duplicated().sum())
+if n_dup_id:
+    logging.warning(
+        f"{n_dup_id} duplicated values in {area_unique_id_col} - output rows will "
+        f"not be uniquely identifiable."
+    )
+if "shapeName" in admin_areas.columns:
+    n_dup_name = int(admin_areas["shapeName"].duplicated().sum())
+    if n_dup_name:
+        logging.info(
+            f"{n_dup_name} repeated shapeName values (expected above ADM0); "
+            f"join on {area_unique_id_col}, not shapeName."
+        )
 logging.info(f"There are {len(admin_areas)} admin areas to analyze.")
 
 logging.info("Looping over admin regions and calculating concentration indices")
@@ -305,7 +324,7 @@ for idx, region in tqdm(admin_areas.iterrows()):
 
     row = {
         area_unique_id_col: region[area_unique_id_col],
-        "shapeName": region["shapeName"],
+        "shapeName": region.get("shapeName", None),
         "CI": CI,
         "CI Within": decomp["within"],
         "CI Between": decomp["between"],
