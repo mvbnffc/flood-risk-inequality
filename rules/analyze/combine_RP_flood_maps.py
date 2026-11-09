@@ -29,12 +29,12 @@ logging.info(f"Combining {river_model} river flood map with {coastal_model} coas
 logging.info("Reading raster data.")
 
 with rasterio.open(river_path) as river_src:
-    river = flood_src.read(1)
+    river = river_src.read(1)
     river_transform = river_src.transform
     river_meta = river_src.meta
 
 with rasterio.open(coastal_path) as coastal_src:
-    coastal = flood_src.read(1)
+    coastal = coastal_src.read(1)
     coastal_transform = coastal_src.transform
     coastal_meta = coastal_src.meta
 
