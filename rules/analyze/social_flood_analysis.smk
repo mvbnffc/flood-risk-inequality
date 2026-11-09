@@ -628,4 +628,11 @@ rule river_return_periods:
         expand("data/results/social_flood/countries/{ISO3}/inequality_metrics/{ISO3}_ADM0_metrics_{MODEL}-flood_{METRIC}_V-{VULN}_S-frwi.gpkg",
             ISO3=config['iso_codes'], MODEL=MODELS, METRIC=METRICS, VULN=VULNS)
 
+COMBINED_MODELS = ['comb-giri-deltares-coastal', 'comb-jrc-deltares-coastal', 'comb-wri-deltares-coastal', 'comb-giri-wri-coastal', 'comb-jrc-wri-coastal', 'comb-wri-wri-coastal']
+
+rule combined_flood_bulk:
+    input:
+        expand("data/results/social_flood/countries/{ISO3}/inequality_metrics/{ISO3}_ADM0_metrics_{MODEL}-flood_RP100_V-EXP_S-frwi.gpkg",
+            ISO3=config['iso_codes'], MODEL=COMBINED_MODELS)
+
 
