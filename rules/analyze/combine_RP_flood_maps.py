@@ -14,7 +14,7 @@ if __name__ == "__main__":
         river_path: str = snakemake.input["river_flood_file"]
         coastal_path: str = snakemake.input["coast_flood_file"]
         output_path: str = snakemake.output["comb_flood_file"]
-        return_period: int = snakemake.wildcards["RP"]
+        metric: int = snakemake.wildcards["METRIC"]
         vuln_dataset: str = snakemake.wildcards["VULN_CURVE"]
         country_code: str = snakemake.wildcards['ISO3']
         river_model: str = snakemake.wildcards['RIVER_MODEL']
@@ -24,7 +24,7 @@ if __name__ == "__main__":
     
 logging.basicConfig(format="%(asctime)s %(process)d %(filename)s %(message)s", level=logging.INFO)
 
-logging.info(f"Combining {river_model} river flood map with {coastal_model} coastal flood map in {country_code} at RP {return_period} using {vuln_dataset} vulnerability curve.")
+logging.info(f"Combining {river_model} river flood map with {coastal_model} coastal flood map in {country_code} at RP {metric} using {vuln_dataset} vulnerability curve.")
 
 logging.info("Reading raster data.")
 
