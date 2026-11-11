@@ -29,8 +29,8 @@ rule combine_RP_flood_maps:
     This rule combines river + coastal RP flood maps for combined hazard analysis
     """
     input:
-        river_flood_file="data/results/flood_risk/countries/{ISO3}/{ISO3}_{RIVER_MODEL}-flood-risk_RP{RP}_V-{VULN_CURVE}.tif",
-        coast_flood_file="data/results/flood_risk/countries/{ISO3}/{ISO3}_{COAST_MODEL}-flood-risk_RP{RP}_V-{VULN_CURVE}.tif"
+        river_flood_file="data/results/flood_risk/countries/{ISO3}/{ISO3}_{RIVER_MODEL}-flood-risk_{METRIC}_V-{VULN_CURVE}.tif",
+        coast_flood_file="data/results/flood_risk/countries/{ISO3}/{ISO3}_{COAST_MODEL}-flood-risk_{METRIC}_V-{VULN_CURVE}.tif"
     output:
         comb_flood_file="data/results/flood_risk/countries/{ISO3}/{ISO3}_comb-{RIVER_MODEL}-{COAST_MODEL}-flood-risk_{METRIC}_V-{VULN_CURVE}.tif"
     wildcard_constraints:
