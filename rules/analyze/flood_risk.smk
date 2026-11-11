@@ -32,27 +32,10 @@ rule combine_RP_flood_maps:
         river_flood_file="data/results/flood_risk/countries/{ISO3}/{ISO3}_{RIVER_MODEL}-flood-risk_RP{RP}_V-{VULN_CURVE}.tif",
         coast_flood_file="data/results/flood_risk/countries/{ISO3}/{ISO3}_{COAST_MODEL}-flood-risk_RP{RP}_V-{VULN_CURVE}.tif"
     output:
-        comb_flood_file="data/results/flood_risk/countries/{ISO3}/{ISO3}_comb-{RIVER_MODEL}-{COAST_MODEL}-flood-risk_RP{RP}_V-{VULN_CURVE}.tif"
+        comb_flood_file="data/results/flood_risk/countries/{ISO3}/{ISO3}_comb-{RIVER_MODEL}-{COAST_MODEL}-flood-risk_{METRIC}_V-{VULN_CURVE}.tif"
     wildcard_constraints:
         VULN_CURVE="JRC|EXP",
-        RP="10|50|100",
-        RIVER_MODEL="giri|jrc|wri",
-        COAST_MODEL="deltares-coastal|wri-coastal"
-    script:
-        "./combine_RP_flood_maps.py"
-
-
-rule combine_AAR_flood_maps:
-    """
-    This rule combines river + coastal AAR flood maps for combined hazard analysis
-    """
-    input:
-        river_flood_file="data/results/flood_risk/countries/{ISO3}/{ISO3}_{RIVER_MODEL}-flood-risk_AAR_V-{VULN_CURVE}.tif",
-        coast_flood_file="data/results/flood_risk/countries/{ISO3}/{ISO3}_{COAST_MODEL}-flood-risk_AAR_V-{VULN_CURVE}.tif"
-    output:
-        comb_flood_file="data/results/flood_risk/countries/{ISO3}/{ISO3}_comb-{RIVER_MODEL}-{COAST_MODEL}-flood-risk_AAR_V-{VULN_CURVE}.tif"
-    wildcard_constraints:
-        VULN_CURVE="JRC|EXP",
+        METRIC="RP10|RP50|RP100|AAR",
         RIVER_MODEL="giri|jrc|wri",
         COAST_MODEL="deltares-coastal|wri-coastal"
     script:
