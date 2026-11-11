@@ -621,7 +621,7 @@ rule observed_degurba_adm1:
 
 MODELS = ['jrc', 'wri', 'giri', 'wri-coastal', 'deltares-coastal']
 VULNS = ['EXP']
-METRICS = ['RP10', 'RP100']
+METRICS = ['AAR', 'RP10', 'RP100']
 
 rule river_return_periods:
     input:
@@ -633,7 +633,7 @@ COMBINED_MODELS = ['comb-giri-deltares-coastal', 'comb-jrc-deltares-coastal', 'c
 
 rule combined_flood_bulk:
     input:
-        expand("data/results/social_flood/countries/{ISO3}/inequality_metrics/{ISO3}_ADM0_metrics_{MODEL}-flood_RP10_V-EXP_S-frwi.gpkg",
-            ISO3=config['iso_codes'], MODEL=COMBINED_MODELS)
+        expand("data/results/social_flood/countries/{ISO3}/inequality_metrics/{ISO3}_ADM0_metrics_{MODEL}-flood_[METRIC]_V-EXP_S-frwi.gpkg",
+            ISO3=config['iso_codes'], MODEL=COMBINED_MODELS, METRIC=METRICS)
 
 
