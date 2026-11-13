@@ -696,4 +696,9 @@ rule bulk_model_urban_rural:
         expand("data/results/social_flood/countries/{ISO3}/inequality_metrics/{ISO3}_ADM0_urban-rural_metrics_{MODEL}-flood_{METRIC}_V-EXP_S-frwi.gpkg",
             ISO3=config['iso_codes'], MODEL=MODELS, METRIC=METRICS)
 
+rule bulk_model_degurba:
+    input:
+        expand("data/results/social_flood/countries/{ISO3}/inequality_metrics/{ISO3}_ADM0_degurba_metrics_{MODEL}-flood_{METRIC}_V-EXP_S-frwi.gpkg",
+            ISO3=config['iso_codes'], MODEL=MODELS, METRIC=METRICS)
+
 
