@@ -64,6 +64,32 @@ Test with
 snakemake -c1 data/results/social_flood/countries/KEN/inequality_metrics/KEN_ADM0_decomposed_metrics_jrc-flood_AAR_V-JRC_S-rwi.gpkg
 """
 
+rule inequality_metrics_modelled_urban_rural:
+    """
+    This rule calcualtes the urban and rural CI metrics and quintile risk numbers.
+    """
+    input:
+        admin_areas = "data/inputs/boundaries/{ISO3}/geobounds_{ISO3}.gpkg",
+        social_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_{SOCIAL}.tif",
+        pop_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_ghs-pop_2020.tif",
+        urban_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_ghs-mod_fixed.tif",
+        mask_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_surface_water.tif",
+        risk_file="data/results/flood_risk/countries/{ISO3}/{ISO3}_{MODEL}-flood-risk_{TYPE}_V-{VULN_CURVE}.tif",
+    output:
+        regional_CI = "data/results/social_flood/countries/{ISO3}/inequality_metrics/{ISO3}_{ADMIN_SLUG}_urban-rural_metrics_{MODEL}-flood_{TYPE}_V-{VULN_CURVE}_S-{SOCIAL}.gpkg",
+    wildcard_constraints:
+        MODEL="giri|jrc|wri|deltares-coastal|wri-coastal|comb-giri-deltares-coastal|comb-jrc-deltares-coastal|comb-wri-deltares-coastal|comb-giri-wri-coastal|comb-jrc-wri-coastal|comb-wri-wri-coastal",
+        SOCIAL="rwi|gdp|frwi",
+        TYPE="AAR|RP10|RP50|RP100|RP500",
+        VULN_CURVE="BER|JRC|EXP",
+        ADMIN_SLUG="ADM0|ADM1|ADM2"
+    script:
+        "./inequality_metrics_urban_rural.py"
+"""
+Test with
+snakemake -c1 data/results/social_flood/countries/KEN/inequality_metrics/KEN_ADM0_urban-rural_metrics_wri-flood_RP10_V-EXP_S-frwi.gpkg
+"""
+
 rule inequality_metrics_protected:
     """
     This rule calcualtes two inequality metrics at the specified administrative level. FLOPROS protection is ON.
@@ -635,5 +661,13 @@ rule combined_flood_bulk:
     input:
         expand("data/results/social_flood/countries/{ISO3}/inequality_metrics/{ISO3}_ADM0_metrics_{MODEL}-flood_{METRIC}_V-EXP_S-frwi.gpkg",
             ISO3=config['iso_codes'], MODEL=COMBINED_MODELS, METRIC=METRICS)
+
+MODELS = ['jrc', 'wri', 'giri', 'wri-coastal', 'deltares-coastal', 'comb-giri-deltares-coastal', 'comb-jrc-deltares-coastal', 'comb-wri-deltares-coastal', 'comb-giri-wri-coastal', 'comb-jrc-wri-coastal', 'comb-wri-wri-coastal']
+METRICS = ['RP100']
+
+rule bulk_model_urban_rural:
+    input:
+        expand("data/results/social_flood/countries/{ISO3}/inequality_metrics/{ISO3}_ADM0_urban-rural_metrics_{MODEL}-flood_{METRIC}_V-EXP_S-frwi.gpkg",
+            ISO3=config['iso_codes'], MODEL=MODELS, METRIC=METRICS)
 
 
