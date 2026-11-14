@@ -16,7 +16,7 @@ rule relative_flood_risk:
         risk_file="data/results/flood_risk/countries/{ISO3}/{ISO3}_{MODEL}-flood-risk_RP{RP}_V-{VULN_CURVE}.tif"
     wildcard_constraints:
         VULN_CURVE="BER|JRC|EXP|NRES|INFR",
-        MODEL="giri|jrc|wri|deltares-coastal|wri-coastal"
+        MODEL="giri|jrc|wri|deltares-coastal|wri-coastal|liscoast-coast"
     script:
         "./relative_flood_risk.py"
 """ 
@@ -37,7 +37,7 @@ rule combine_RP_flood_maps:
         VULN_CURVE="JRC|EXP",
         METRIC="RP10|RP50|RP100|AAR",
         RIVER_MODEL="giri|jrc|wri",
-        COAST_MODEL="deltares-coastal|wri-coastal"
+        COAST_MODEL="deltares-coastal|wri-coastal|liscoast-coast"
     script:
         "./combine_RP_flood_maps.py"
 

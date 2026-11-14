@@ -23,7 +23,7 @@ rule inequality_metrics:
     output:
         regional_CI = "data/results/social_flood/countries/{ISO3}/inequality_metrics/{ISO3}_{ADMIN_SLUG}_metrics_{MODEL}-flood_{TYPE}_V-{VULN_CURVE}_S-{SOCIAL}.gpkg",
     wildcard_constraints:
-        MODEL="giri|jrc|wri|deltares-coastal|wri-coastal|comb-giri-deltares-coastal|comb-jrc-deltares-coastal|comb-wri-deltares-coastal|comb-giri-wri-coastal|comb-jrc-wri-coastal|comb-wri-wri-coastal",
+        MODEL="giri|jrc|wri|deltares-coastal|wri-coastal|liscoast-coastal|comb-giri-deltares-coastal|comb-jrc-deltares-coastal|comb-wri-deltares-coastal|comb-giri-wri-coastal|comb-jrc-wri-coastal|comb-wri-wri-coastal|comb-giri-liscoast-coastal|comb-jrc-liscoast-coastal",
         TYPE="AAR|RP10|RP50|RP100|RP500",
         SOCIAL="rwi|gdp|frwi",
         VULN_CURVE="BER|JRC|EXP",
@@ -78,7 +78,7 @@ rule inequality_metrics_modelled_urban_rural:
     output:
         regional_CI = "data/results/social_flood/countries/{ISO3}/inequality_metrics/{ISO3}_{ADMIN_SLUG}_urban-rural_metrics_{MODEL}-flood_{TYPE}_V-{VULN_CURVE}_S-{SOCIAL}.gpkg",
     wildcard_constraints:
-        MODEL="giri|jrc|wri|deltares-coastal|wri-coastal|comb-giri-deltares-coastal|comb-jrc-deltares-coastal|comb-wri-deltares-coastal|comb-giri-wri-coastal|comb-jrc-wri-coastal|comb-wri-wri-coastal",
+        MODEL="giri|jrc|wri|deltares-coastal|wri-coastal|liscoast-coastal|comb-giri-deltares-coastal|comb-jrc-deltares-coastal|comb-wri-deltares-coastal|comb-giri-wri-coastal|comb-jrc-wri-coastal|comb-wri-wri-coastal|comb-giri-liscoast-coastal|comb-jrc-liscoast-coastal",
         SOCIAL="rwi|gdp|frwi",
         TYPE="AAR|RP10|RP50|RP100|RP500",
         VULN_CURVE="BER|JRC|EXP",
@@ -104,7 +104,7 @@ rule inequality_metrics_modelled_degurba:
     output:
         regional_CI = "data/results/social_flood/countries/{ISO3}/inequality_metrics/{ISO3}_{ADMIN_SLUG}_degurba_metrics_{MODEL}-flood_{TYPE}_V-{VULN_CURVE}_S-{SOCIAL}.gpkg",
     wildcard_constraints:
-        MODEL="giri|jrc|wri|deltares-coastal|wri-coastal|comb-giri-deltares-coastal|comb-jrc-deltares-coastal|comb-wri-deltares-coastal|comb-giri-wri-coastal|comb-jrc-wri-coastal|comb-wri-wri-coastal",
+        MODEL="giri|jrc|wri|deltares-coastal|wri-coastal|liscoast-coastal|comb-giri-deltares-coastal|comb-jrc-deltares-coastal|comb-wri-deltares-coastal|comb-giri-wri-coastal|comb-jrc-wri-coastal|comb-wri-wri-coastal|comb-giri-liscoast-coastal|comb-jrc-liscoast-coastal",
         SOCIAL="rwi|gdp|frwi",
         TYPE="AAR|RP10|RP50|RP100|RP500",
         VULN_CURVE="BER|JRC|EXP",
@@ -700,5 +700,20 @@ rule bulk_model_degurba:
     input:
         expand("data/results/social_flood/countries/{ISO3}/inequality_metrics/{ISO3}_ADM0_degurba_metrics_{MODEL}-flood_{METRIC}_V-EXP_S-frwi.gpkg",
             ISO3=config['iso_codes'], MODEL=MODELS, METRIC=METRICS)
+
+LISCOAST_MODELS = ['liscoast-coastal', 'comb-jrc-liscoast-coastal', 'comb-giri-liscoast-coastal']
+
+rule liscoast_rp100_bulk:
+    """
+    National CI (plus urban-rural and DEGURBA decompositions) for the LISCoAsT coastal map
+    on its own and combined with the JRC and GIRI river maps, at RP100 only.
+    """
+    input:
+        expand("data/results/social_flood/countries/{ISO3}/inequality_metrics/{ISO3}_ADM0_metrics_{MODEL}-flood_RP100_V-EXP_S-frwi.gpkg",
+            ISO3=config['iso_codes'], MODEL=LISCOAST_MODELS),
+        expand("data/results/social_flood/countries/{ISO3}/inequality_metrics/{ISO3}_ADM0_urban-rural_metrics_{MODEL}-flood_RP100_V-EXP_S-frwi.gpkg",
+            ISO3=config['iso_codes'], MODEL=LISCOAST_MODELS),
+        expand("data/results/social_flood/countries/{ISO3}/inequality_metrics/{ISO3}_ADM0_degurba_metrics_{MODEL}-flood_RP100_V-EXP_S-frwi.gpkg",
+            ISO3=config['iso_codes'], MODEL=LISCOAST_MODELS)
 
 
