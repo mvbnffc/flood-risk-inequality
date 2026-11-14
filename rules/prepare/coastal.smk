@@ -72,7 +72,7 @@ rule clip_liscoast_coastal_flood:
     wildcard_constraints:
         RP="100"
     params:
-        src_nodata=""
+        src_nodata="-srcnodata nan"
     shell:
         """
         set -ex
