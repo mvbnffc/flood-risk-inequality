@@ -37,7 +37,7 @@ rule combine_RP_flood_maps:
         VULN_CURVE="JRC|EXP",
         METRIC="RP10|RP50|RP100|AAR",
         RIVER_MODEL="giri|jrc|wri",
-        COAST_MODEL="deltares-coastal|wri-coastal|liscoast-coast"
+        COAST_MODEL="deltares-coastal|wri-coastal|liscoast-coastal"
     script:
         "./combine_RP_flood_maps.py"
 
