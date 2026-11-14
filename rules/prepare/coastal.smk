@@ -58,3 +58,45 @@ rule clip_wri_coastal_flood:
         rwi_resampled = "data/inputs/analysis/countries/{ISO3}/{ISO3}_wri-coastal-flood_RP{RP}.tif"
     script:
         "./rwi_prep.py"
+
+rule clip_liscoast_coastal_flood:
+    """
+    Clip LISCoAsT coastal flood map to country boundary on the GHS-POP 3 arc-second grid.
+    """
+    input:
+        pop_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_ghs-pop_2020.tif",
+        raw_flood_file="data/inputs/flood/LISCoAsT_coastal/LISCoAsT_coastal_rp0100.vrt",
+        boundary_file="data/inputs/boundaries/{ISO3}/geobounds_{ISO3}.geojson",
+    output:
+        trimmed_flood_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_liscoast-coastal-flood_RP{RP}.tif",
+    wildcard_constraints:
+        RP="100"
+    params:
+        src_nodata=""
+    shell:
+        """
+        set -ex
+
+        mkdir --parents $(dirname {output.trimmed_flood_file})
+
+        gdalwarp \
+            -cutline {input.boundary_file} \
+            -crop_to_cutline \
+            -t_srs EPSG:4326 \
+            -tr 0.00083333333333333 0.00083333333333333 \
+            -tap \
+            -r near \
+            {params.src_nodata} \
+            -dstnodata 0 \
+            -te_srs EPSG:4326 \
+            -te $(gdalinfo -json {input.pop_file} | jq -r '.cornerCoordinates | [.upperLeft[0], .lowerLeft[1], .lowerRight[0], .upperRight[1]] | join(" ")') \
+            -of GTiff \
+            -co BIGTIFF=YES \
+            -co compress=lzw \
+            {input.raw_flood_file} \
+            {output.trimmed_flood_file}
+        """
+"""
+Test with
+snakemake -c1 data/inputs/analysis/countries/KEN/KEN_liscoast-coastal-flood_RP100.tif
+"""
