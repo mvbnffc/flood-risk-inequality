@@ -32,7 +32,7 @@ rule prepare_relocation:
     input:
         flopros_path="data/inputs/analysis/countries/{ISO3}/{ISO3}_flopros.tif",
         flood_path="data/inputs/analysis/countries/{ISO3}/{ISO3}_{model}-flood_RP10.tif",
-        pop_path="data/inputs/analysis/countries/{ISO3}/{ISO3}_ghs-pop.tif",
+        pop_path="data/inputs/analysis/countries/{ISO3}/{ISO3}_ghs-pop_2020.tif",
         urbanization_path="data/inputs/analysis/countries/{ISO3}/{ISO3}_ghs-mod.tif"
     output:
         flood_protection="data/inputs/analysis/countries/{ISO3}/{ISO3}_adaptation_rl_m-{model}_duc{urban_class}.tif",
