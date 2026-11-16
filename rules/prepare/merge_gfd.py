@@ -1,5 +1,9 @@
 """
-Script for creating a merged raster of the Global Flood Databse - for inland and coastal flooding.
+Script for merging Global Flood Database (GFD) event rasters into one global flood
+frequency raster for one flood type (rain, snow, dam, storm or combined).
+
+Each cell holds the number of selected GFD events that mapped it as flooded. Cells
+GFD did not map in an event count as not flooded (see prepare_gfd.py).
 """
 
 import logging
@@ -91,8 +95,7 @@ expected_filenames = {f"DFO_{gfd_id}.tif" for gfd_id in gfd_ids}
 available_files = {os.path.basename(file): file for file in all_raster_files}
 missing_files = expected_filenames - available_files.keys()
 if missing_files:
-    raise 
-    ileNotFoundError(f"{len(missing_files)} expected GFD rasters are missing. "
+    raise FileNotFoundError(f"{len(missing_files)} expected GFD rasters are missing. "
         f"Examples: {sorted(missing_files)[:10]}"
     )
 raster_files = [available_files[filename] for filename in sorted(expected_filenames)]
@@ -115,7 +118,7 @@ with rasterio.open(output_path,
                    height=global_height,
                    count=1,
                    dtype=global_raster.dtype,
-                   crs=src.crs,
+                   crs=global_crs,
                    transform=rasterio.transform.from_origin(global_extent[0], global_extent[3], raster_resolution, raster_resolution)
                    ) as dst:
     dst.write(global_raster, 1)
