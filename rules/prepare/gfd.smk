@@ -7,9 +7,10 @@ Prepare the GFD Flood data. This involves:
 
 rule prepare_gfd_merge:
     """
-    This rule extracts the relevant GFD raster bands (flood occurance and permanent water)
-    and converts NaN values to zero - which prepares the files for a global merge.
-    It also filters the relevant GFD maps and sorts them by inland or coastal. 
+    This rule reads the GFD flooded band (band 1) from each event zip, mosaics events
+    that Earth Engine exported as several tiles, and converts NaN values to zero -
+    which prepares the files for a global merge. Flood types are selected later,
+    in the merge rules, using the config/gfd_{TYPE}.txt ID lists.
     """
     input:
         raw_gfd_folder="data/inputs/gfd/raw/"
@@ -34,10 +35,10 @@ rule merge_gfd:
 
 rule merge_temporal_gfd:
     """
-    This rule merges GFD rasters into annual files for coastal and inland flooding
+    This rule merges GFD rasters into annual (or early/late) files for one flood type
     """
     input:
-        merge_gfd_folder="data/inputs/gfd/prep/{TYPE}/",
+        merge_gfd_folder="data/inputs/gfd/prep/",
         epoch_ids="config/gfd_{YEAR}.txt",
         flood_ids="config/gfd_{TYPE}.txt"
     output:
@@ -107,7 +108,7 @@ rule binary_gfd:
         gdal_calc.py \
             -A {input.gfd_flood} \
             --outfile={output.binary_gfd_flood} \
-            --calc="A>1" \
+            --calc="A>0" \
             --type=Byte \
             --NoDataValue=255 \
             --co="COMPRESS=DEFLATE" \
