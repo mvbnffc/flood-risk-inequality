@@ -122,11 +122,14 @@ urbanization = urbanization.merge(lengths_by_admin, on=f"GID_{gadm_level}", how=
 urbanization['river_length_m'] = (urbanization['river_length_m'].astype(float).fillna(0))  # Fill NaN with 0. Also fixing DEBUG Type Error
 
 logging.info("Calculate the ADMIN level costs of adaptation measures.")
-# Formula for cost of adaptation is C = unit cost * River Length (km) * log2(∆ flood protection) Source: Boulange et al (2023)
+# Formula for cost of adaptation is C = unit cost * River Length (km) * log2(RP_design / RP_baseline)
+# Source: Boulange et al (2023), where FPL_future = FPL_current * 2^L (L = number of doublings of the protection RP).
+# Baseline protection is floored at 2 years (FLOPROS = 0 is treated as unprotected, as in the risk calculation).
 # 3 values from supplementary material of that paper (million USD)
 min_unit_cost = 0.7996
 mid_unit_cost = 2.399
 max_unit_cost = 7.196
+min_baseline_protection = 2.0
 
 # Loop through each admin region and calculate costs
 for idx, row in urbanization.iterrows():
@@ -135,18 +138,19 @@ for idx, row in urbanization.iterrows():
             urbanization.at[idx, 'adaptation_cost_mid'] = 0
             urbanization.at[idx, 'adaptation_cost_max'] = 0
         else:
-            # Calculate the delta in flood protection
-            delta_fp = float(rp) - row['FLOPROS']
-            if delta_fp <= 0:
+            # Number of doublings of the protection return period
+            baseline_fp = max(float(row['FLOPROS']), min_baseline_protection)
+            if float(rp) <= baseline_fp:
                 urbanization.at[idx, 'adaptation_cost_min'] = 0
                 urbanization.at[idx, 'adaptation_cost_mid'] = 0
                 urbanization.at[idx, 'adaptation_cost_max'] = 0
             else:
+                doublings = np.log2(float(rp) / baseline_fp)
                 # Calculate costs based on river length (in km) and unit costs
                 river_length_km = row['river_length_m'] / 1000.0
-                urbanization.at[idx, 'adaptation_cost_min'] = min_unit_cost * river_length_km * np.log2(delta_fp)
-                urbanization.at[idx, 'adaptation_cost_mid'] = mid_unit_cost * river_length_km * np.log2(delta_fp)
-                urbanization.at[idx, 'adaptation_cost_max'] = max_unit_cost * river_length_km * np.log2(delta_fp)
+                urbanization.at[idx, 'adaptation_cost_min'] = min_unit_cost * river_length_km * doublings
+                urbanization.at[idx, 'adaptation_cost_mid'] = mid_unit_cost * river_length_km * doublings
+                urbanization.at[idx, 'adaptation_cost_max'] = max_unit_cost * river_length_km * doublings
 
 logging.info("Sum costs across admin regions and save to text file.")
 costs = urbanization[['GID_' + gadm_level, 'adaptation_cost_min', 'adaptation_cost_mid', 'adaptation_cost_max']].sum()
