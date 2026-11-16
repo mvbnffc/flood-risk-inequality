@@ -33,7 +33,7 @@ rule relocation_costs:
         admin_areas="data/inputs/boundaries/{ISO3}/geobounds_{ISO3}.gpkg",
         flopros_path="data/inputs/analysis/countries/{ISO3}/{ISO3}_flopros.tif",
         flood_path="data/inputs/analysis/countries/{ISO3}/{ISO3}_{model}-flood_RP10.tif",
-        pop_path="data/inputs/analysis/countries/{ISO3}/{ISO3}_ghs-pop.tif",
+        pop_path="data/inputs/analysis/countries/{ISO3}/{ISO3}_ghs-pop_2020.tif",
         urbanization_path="data/inputs/analysis/countries/{ISO3}/{ISO3}_ghs-mod.tif",
         res_area="data/inputs/analysis/countries/{ISO3}/{ISO3}_ghs-res_a.tif",
         res_capstock="data/inputs/analysis/countries/{ISO3}/{ISO3}_res_capstock.tif"
