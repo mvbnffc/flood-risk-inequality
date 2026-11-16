@@ -7,7 +7,7 @@ rule rasterize_osm_infra:
     """
     input:
         inf_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_osm_roads.gpkg",
-        pop_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_ghs-pop.tif"
+        pop_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_ghs-pop_2020.tif"
     output:
         infrastructure_raster="data/inputs/analysis/countries/{ISO3}/{ISO3}_infra_raw.tif"
     script:
@@ -25,7 +25,7 @@ rule clip_rasterized_infra:
     input:
         raw_infrastructure_raster="data/inputs/analysis/countries/{ISO3}/{ISO3}_infra_raw.tif",
         boundary_file="data/inputs/boundaries/{ISO3}/geobounds_{ISO3}.geojson",
-        pop_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_ghs-pop.tif"
+        pop_file="data/inputs/analysis/countries/{ISO3}/{ISO3}_ghs-pop_2020.tif"
     output:
         infrastructure_raster="data/inputs/analysis/countries/{ISO3}/{ISO3}_infra.tif"
     shell:
