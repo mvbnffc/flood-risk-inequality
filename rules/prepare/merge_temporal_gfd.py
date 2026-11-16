@@ -1,5 +1,10 @@
 """
-Script for creating a merged annual rasters of the Global Flood Databse - for inland and coastal flooding.
+Script for merging Global Flood Database (GFD) event rasters into a global flood
+frequency raster for one epoch (a single year, early or late) and one flood type
+(rain, snow, dam, storm or combined).
+
+Each cell holds the number of selected GFD events that mapped it as flooded. Cells
+GFD did not map in an event count as not flooded (see prepare_gfd.py).
 """
 
 import logging
