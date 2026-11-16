@@ -128,7 +128,9 @@ for country in valid_countries:
     results = subprocess.run(['gdalinfo', "-json", pop_path], capture_output=True, text=True, check=True)
     info = json.loads(results.stdout)
     cc = info.get('cornerCoordinates', {})
-    te_values = [cc['upperLeft'][0], cc['upperRight'][1], cc['lowerLeft'][0], cc['lowerRight'][1]]
+    # gdalwarp -te order is xmin ymin xmax ymax (same as the clip_gfd rule).
+    # Note: -crop_to_cutline sets the output extent, so -te is overridden in practice.
+    te_values = [cc['upperLeft'][0], cc['lowerLeft'][1], cc['lowerRight'][0], cc['upperRight'][1]]
     te_args = list(map(str, te_values))
     # Build the gdalwarp command
     gdal_cmd = [
