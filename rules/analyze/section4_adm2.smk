@@ -1,6 +1,7 @@
 """
 Section 4 (revision) - flood protection for every admin unit with a river, and one table of
 admin-unit risk by NATIONAL wealth quintile for the targeting analysis in the notebook.
+Flood protection only: baseline and protected scenarios.
 
 New rules only. Add to the Snakefile:
     include: "rules/analyze/section4_adm2.smk"
@@ -19,11 +20,10 @@ Chain for one country (ADM2, JRC):
     prepare_admin_flood_protection.py  -> {ISO3}_adaptation_fp_rp100_all-ADM2.tif + per-unit costs
     *_average_annual_risk_protected.py -> adapted risk for V-JRC / V-NRES / V-INFR (existing scripts,
                                           run with the adapted FLOPROS raster)
-    section4_adm2_table.py             -> per-unit table (base, fp, dp, rl)
+    section4_adm2_table.py             -> per-unit table (base, fp)
     section4_adm2_combine.py           -> one wide table for all countries, costs joined on shapeID
 
 Countries without an ADM2 layer fall back to ADM1 (the admin_level column says which was used).
-Dry-proofing and relocation (duc13) use the existing scenario rasters and the existing cost rules.
 """
 
 import os
@@ -60,10 +60,6 @@ def s4_country_files(wildcards, kind):
             )
         elif kind == "fp":
             out.append(f"data/results/adaptation/costs/countries/{iso}/{iso}_adaptation-cost_fp_rp100_all-{level}.gpkg")
-        elif kind == "dp":
-            out.append(f"data/results/adaptation/costs/countries/{iso}/{iso}_adaptation-cost_dp_m-{wildcards.MODEL}_{level}.gpkg")
-        elif kind == "rl":
-            out.append(f"data/results/adaptation/costs/countries/{iso}/{iso}_adaptation-cost_rl_m-{wildcards.MODEL}_duc13_{level}.gpkg")
     return out
 
 
@@ -177,8 +173,6 @@ rule section4_adm2_table:
         fp_res="data/results/flood_risk/countries/{ISO3}/{ISO3}_{MODEL}-flood-risk_adapted_AAR_V-JRC_fp_rp100_all-{ADMIN_SLUG}.tif",
         fp_nres="data/results/flood_risk/countries/{ISO3}/{ISO3}_{MODEL}-flood-risk_adapted_AAR_V-NRES_fp_rp100_all-{ADMIN_SLUG}.tif",
         fp_infr="data/results/flood_risk/countries/{ISO3}/{ISO3}_{MODEL}-flood-risk_adapted_AAR_V-INFR_fp_rp100_all-{ADMIN_SLUG}.tif",
-        dp_res="data/results/flood_risk/countries/{ISO3}/{ISO3}_{MODEL}-flood-risk_adapted_AAR_V-JRC_dp.tif",
-        rl_res="data/results/flood_risk/countries/{ISO3}/{ISO3}_{MODEL}-flood-risk_adapted_AAR_V-JRC_rl_duc13.tif",
     output:
         units="data/results/section4_adm2/countries/{ISO3}/{ISO3}_{ADMIN_SLUG}_units_{MODEL}-flood_S-{SOCIAL}.csv",
         checks="data/results/section4_adm2/countries/{ISO3}/{ISO3}_{ADMIN_SLUG}_checks_{MODEL}-flood_S-{SOCIAL}.csv",
@@ -197,8 +191,6 @@ rule section4_adm2_combine:
         units=lambda wc: s4_country_files(wc, "units"),
         checks=lambda wc: s4_country_files(wc, "checks"),
         fp_costs=lambda wc: s4_country_files(wc, "fp"),
-        dp_costs=lambda wc: s4_country_files(wc, "dp"),
-        rl_costs=lambda wc: s4_country_files(wc, "rl"),
     params:
         iso_codes=lambda wc: config["iso_codes"],
     output:
@@ -221,8 +213,6 @@ rule section4_adm2_test:
     input:
         "data/results/section4_adm2/countries/RWA/RWA_ADM2_units_jrc-flood_S-rwi.csv",
         "data/results/adaptation/costs/countries/RWA/RWA_adaptation-cost_fp_rp100_all-ADM2.gpkg",
-        "data/results/adaptation/costs/countries/RWA/RWA_adaptation-cost_dp_m-jrc_ADM2.gpkg",
-        "data/results/adaptation/costs/countries/RWA/RWA_adaptation-cost_rl_m-jrc_duc13_ADM2.gpkg",
 
 
 rule section4_fp_costs_adm0:
