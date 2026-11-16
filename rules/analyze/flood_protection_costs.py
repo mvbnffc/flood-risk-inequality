@@ -1,7 +1,13 @@
 """
 This script calculates the cost of river flood protection at the admin scale, using the 
-length of river to be protected in every urban area as well as the flood protection delta
-(relative to baseline protection)
+length of river to be protected in every urban area as well as the increase in flood
+protection relative to baseline (FLOPROS) protection.
+
+Cost = unit cost (per km per doubling of the protection return period) * river length (km)
+       * log2(RP_design / RP_baseline)
+following Boulange et al. (2023), where FPL_future = FPL_current * 2^L.
+Baseline protection is floored at 2 years (FLOPROS = 0, i.e. outside the FLOPROS polygons,
+is treated as unprotected, as in the risk calculation and prepare_river_flood_protection.py).
 """
 
 import logging
@@ -86,6 +92,7 @@ def zonal_mode_for_polygon(src, geom):
 
     if src.nodata is not None:
         arr = arr[arr != src.nodata]
+    arr = arr[np.isfinite(arr)]
 
     if arr.size == 0:
         return np.nan
@@ -108,25 +115,29 @@ def calculate_protection_costs(geom, protection_level, country_cost_adjustment):
     """
     max_unit_cost = 7.196 # million
     standard_unit_cost = 2.399 # million
-    min_unit_cost = 0.7966 # million
+    min_unit_cost = 0.7996 # million (was 0.7966; 0.7996 as in prepare_river_flood_protection.py)
+    min_baseline_protection = 2.0 # years; floor for low/unknown baseline protection
 
     river_length = geom['riv_len_km']
     baseline_protection = geom['FLOPROS']
 
-    # Protection delta
-    delta_fp = np.max((protection_level-baseline_protection), 0)
+    # No overlap with the FLOPROS raster: no cost
+    if not np.isfinite(baseline_protection):
+        return np.nan, np.nan, np.nan, np.nan
 
-    # Guard against log2(0) or negatives
-    if delta_fp <= 0:
+    # Number of doublings of the protection return period (Boulange et al. 2023: FPL_future = FPL_current * 2^L)
+    baseline_protection = max(float(baseline_protection), min_baseline_protection)
+    if protection_level <= baseline_protection:
         adaptation_cost = 0.0
         adj_adaptation_cost = 0.0
         min_adaptation_cost = 0.0
         max_adaptation_cost = 0.0
     else:
-        adaptation_cost = standard_unit_cost * river_length * np.log2(delta_fp)
-        adj_adaptation_cost = standard_unit_cost * country_cost_adjustment * river_length * np.log2(delta_fp)
-        min_adaptation_cost = min_unit_cost * river_length * np.log2(delta_fp)
-        max_adaptation_cost = max_unit_cost * river_length * np.log2(delta_fp)
+        doublings = np.log2(protection_level / baseline_protection)
+        adaptation_cost = standard_unit_cost * river_length * doublings
+        adj_adaptation_cost = standard_unit_cost * country_cost_adjustment * river_length * doublings
+        min_adaptation_cost = min_unit_cost * river_length * doublings
+        max_adaptation_cost = max_unit_cost * river_length * doublings
         # Sanity check - ensure within min/max bounds
         if adj_adaptation_cost < min_adaptation_cost:
             adj_adaptation_cost = min_adaptation_cost
