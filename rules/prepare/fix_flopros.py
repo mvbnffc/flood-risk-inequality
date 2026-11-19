@@ -11,18 +11,20 @@ coastlines and borders differently, this leaves:
 
 FLOPROS itself never uses 0 as a protection standard: its minimum ("no protection") is a 2-year
 return period, and units where no standard could be derived are "no data" (Scussolini et al.
-2016). A MerL_Riv of 0 is therefore treated as no data here, like a missing polygon.
+2016). Own polygons with no data (MerL_Riv missing or <= 0) are therefore given the FLOPROS
+minimum of 2 years. In the risk integration this is identical to the current treatment of 0.
 
 This script:
-  1. keeps only the country's own FLOPROS polygons with data (MerL_Riv > 0; at least half of the
-     polygon's area lies inside the country boundary);
-  2. rasterises their merged river protection standard (MerL_Riv) on the population grid;
-  3. fills every cell inside the country that no own polygon covers with the value of the
-     nearest covered cell (Euclidean nearest neighbour; falls back to the national median
-     if nothing is reachable);
+  1. keeps only the country's own FLOPROS polygons (at least half of the polygon's area lies
+     inside the country boundary);
+  2. rasterises their merged river protection standard (MerL_Riv) on the population grid, with
+     no-data polygons set to 2 years (polygons with data are burned last, so they win overlaps);
+  3. fills every cell inside the country that no own polygon covers (coastal strips, border
+     slivers, cells inside a neighbour's polygon) with the value of the nearest covered cell
+     (Euclidean nearest neighbour; falls back to the national median if nothing is reachable);
   4. sets cells outside the country to 0, as the current clipped raster does.
 
-Cells covered by an own polygon with data keep that polygon's value exactly, including low values.
+Cells covered by an own polygon keep that polygon's value exactly, including low values.
 
 A one-row log compares the result with the current {ISO3}_flopros.tif (read if present):
 shares of in-country cells and of population whose protection changes, and the
@@ -39,6 +41,7 @@ import rasterio
 from rasterio.features import rasterize
 
 OWN_SHARE = 0.5      # share of a FLOPROS polygon's area that must lie inside the country
+NO_DATA_STANDARD = 2.0  # FLOPROS minimum ("no protection"), used for own polygons without data
 WINDOW_MARGIN = 256  # cells around the gaps searched for nearest values
 
 
@@ -161,8 +164,9 @@ def main():
     fl_crs = gpd.read_file(flopros_path, rows=1).crs
     bbox = tuple(gpd.GeoSeries([country_geom], crs=crs).to_crs(fl_crs).total_bounds) if (crs is not None and fl_crs != crs) else tuple(country_geom.bounds)
     polys = gpd.read_file(flopros_path, bbox=bbox)
-    n_no_data = int((polys["MerL_Riv"].isna() | (polys["MerL_Riv"] <= 0)).sum())
-    polys = polys[(polys["MerL_Riv"] > 0) & polys.geometry.notna()].copy()  # 0 = no data in FLOPROS
+    polys = polys[polys.geometry.notna()].copy()
+    polys["no_data"] = polys["MerL_Riv"].isna() | (polys["MerL_Riv"] <= 0)  # 0 = no data in FLOPROS
+    polys["standard"] = np.where(polys["no_data"], NO_DATA_STANDARD, polys["MerL_Riv"].fillna(0)).astype(float)
     if crs is not None and polys.crs != crs:
         polys = polys.to_crs(crs)
     polys["geometry"] = polys.geometry.buffer(0)
@@ -176,8 +180,11 @@ def main():
         own = polys[share_inside > 0]
         fallback_all = True
 
+    n_no_data = int(own["no_data"].sum())
+    logging.info(f"{n_no_data} own polygons have no data and get {NO_DATA_STANDARD:g} years.")
     logging.info("Rasterising own polygons and the country outline.")
-    shapes = [(g, float(v)) for g, v in zip(own.geometry, own["MerL_Riv"])]
+    own = own.sort_values("no_data", ascending=False)  # no-data first, so polygons with data win overlaps
+    shapes = [(g, float(v)) for g, v in zip(own.geometry, own["standard"])]
     values = rasterize(shapes, out_shape=shape, transform=transform, fill=0, dtype="float32") if shapes \
         else np.zeros(shape, dtype="float32")
     covered = rasterize([(g, 1) for g in own.geometry], out_shape=shape, transform=transform, fill=0, dtype="uint8").astype(bool) \
@@ -211,6 +218,13 @@ def main():
     log = {"ISO3": country, "n_polygons_near": len(polys), "n_polygons_no_data": n_no_data, "n_polygons_own": len(own),
            "fallback_all_polygons": fallback_all, "cells_filled_with_median": n_median}
     log.update(summarise(old, values, in_country, covered, pop))
+    if n_no_data:
+        nd = rasterize([(g, 1) for g in own.loc[own["no_data"], "geometry"]], out_shape=shape,
+                       transform=transform, fill=0, dtype="uint8").astype(bool) & in_country
+        w = np.where(np.isfinite(pop) & (pop > 0) & in_country, pop, 0)
+        log["pop_share_no_data_units"] = float(w[nd].sum(dtype=np.float64) / w.sum(dtype=np.float64)) if w.sum() > 0 else np.nan
+    else:
+        log["pop_share_no_data_units"] = 0.0
     pd.DataFrame([log]).to_csv(log_path, index=False)
     logging.info(f"Done: {log}")
 
