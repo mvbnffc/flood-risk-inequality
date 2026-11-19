@@ -46,6 +46,7 @@ include: "rules/prepare/infrastructure.smk"
 include: "rules/prepare/built_capital.smk"
 include: "rules/prepare/coastal.smk"
 include: "rules/prepare/flopros_fix.smk"
+include: "rules/prepare/flopros_switch.smk"
 
 include: "rules/analyze/flood_risk.smk"
 include: "rules/analyze/social_flood_analysis.smk"

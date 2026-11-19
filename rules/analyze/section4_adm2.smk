@@ -9,10 +9,12 @@ New rules only. Add to the Snakefile:
 Targets:
     snakemake -c1 section4_adm2_test     # RWA only
     snakemake -c4 -k section4_adm2       # all countries (ADM2, JRC, RWI)
+    snakemake -c4 -k section4_adm2_giri  # all countries (ADM2, GIRI, RWI)
+    snakemake -c4 -k section4_adm2_both  # JRC and GIRI
     snakemake -c4 -R flood_protection_costs section4_fp_costs_adm0
                                          # re-run the paper's national (duc30) costs with the corrected formula
 
-Files to copy back for the notebook:
+Files to copy back for the notebook (and the same with giri-flood):
     data/results/section4_adm2/section4_adm2_ADM2_jrc-flood_S-rwi.csv
     data/results/section4_adm2/section4_adm2_ADM2_jrc-flood_S-rwi_checks.csv
 
@@ -207,6 +209,17 @@ rule section4_adm2_combine:
 rule section4_adm2:
     input:
         "data/results/section4_adm2/section4_adm2_ADM2_jrc-flood_S-rwi.csv",
+
+
+rule section4_adm2_giri:
+    input:
+        "data/results/section4_adm2/section4_adm2_ADM2_giri-flood_S-rwi.csv",
+
+
+rule section4_adm2_both:
+    input:
+        "data/results/section4_adm2/section4_adm2_ADM2_jrc-flood_S-rwi.csv",
+        "data/results/section4_adm2/section4_adm2_ADM2_giri-flood_S-rwi.csv",
 
 
 rule section4_adm2_test:
