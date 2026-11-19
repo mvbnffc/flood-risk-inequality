@@ -9,16 +9,20 @@ coastlines and borders differently, this leaves:
   - cells inside the country but inside a neighbouring country's FLOPROS polygon, which take
     the neighbour's protection standard.
 
+FLOPROS itself never uses 0 as a protection standard: its minimum ("no protection") is a 2-year
+return period, and units where no standard could be derived are "no data" (Scussolini et al.
+2016). A MerL_Riv of 0 is therefore treated as no data here, like a missing polygon.
+
 This script:
-  1. keeps only the country's own FLOPROS polygons (at least half of the polygon's area lies
-     inside the country boundary);
+  1. keeps only the country's own FLOPROS polygons with data (MerL_Riv > 0; at least half of the
+     polygon's area lies inside the country boundary);
   2. rasterises their merged river protection standard (MerL_Riv) on the population grid;
   3. fills every cell inside the country that no own polygon covers with the value of the
      nearest covered cell (Euclidean nearest neighbour; falls back to the national median
      if nothing is reachable);
   4. sets cells outside the country to 0, as the current clipped raster does.
 
-Cells covered by an own polygon keep that polygon's value exactly, including genuine low values.
+Cells covered by an own polygon with data keep that polygon's value exactly, including low values.
 
 A one-row log compares the result with the current {ISO3}_flopros.tif (read if present):
 shares of in-country cells and of population whose protection changes, and the
@@ -157,7 +161,8 @@ def main():
     fl_crs = gpd.read_file(flopros_path, rows=1).crs
     bbox = tuple(gpd.GeoSeries([country_geom], crs=crs).to_crs(fl_crs).total_bounds) if (crs is not None and fl_crs != crs) else tuple(country_geom.bounds)
     polys = gpd.read_file(flopros_path, bbox=bbox)
-    polys = polys[polys["MerL_Riv"].notna() & polys.geometry.notna()].copy()
+    n_no_data = int((polys["MerL_Riv"].isna() | (polys["MerL_Riv"] <= 0)).sum())
+    polys = polys[(polys["MerL_Riv"] > 0) & polys.geometry.notna()].copy()  # 0 = no data in FLOPROS
     if crs is not None and polys.crs != crs:
         polys = polys.to_crs(crs)
     polys["geometry"] = polys.geometry.buffer(0)
@@ -203,7 +208,7 @@ def main():
                 old[~np.isfinite(old)] = 0.0
     with rasterio.open(pop_path) as src:
         pop = src.read(1).astype(np.float32)
-    log = {"ISO3": country, "n_polygons_near": len(polys), "n_polygons_own": len(own),
+    log = {"ISO3": country, "n_polygons_near": len(polys), "n_polygons_no_data": n_no_data, "n_polygons_own": len(own),
            "fallback_all_polygons": fallback_all, "cells_filled_with_median": n_median}
     log.update(summarise(old, values, in_country, covered, pop))
     pd.DataFrame([log]).to_csv(log_path, index=False)
