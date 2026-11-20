@@ -10,7 +10,7 @@ rule download_giri_flood:
     output:
         flood_file="data/inputs/flood/GIRI/global_pc_h{RP}glob.tif"
     wildcard_constraints:
-        RP="5|10|25|50|100|200|500|1000"
+        RP="2|5|10|25|50|100|200|500|1000"
     shell:
         """
         mkdir -p $(dirname {output.flood_file})
@@ -26,7 +26,7 @@ rule convert_giri_flood:
     output:
         converted_flood_file="data/inputs/flood/GIRI/global_pc_h{RP}glob_m.tif"
     wildcard_constraints:
-        RP="5|10|25|50|100|200|500|1000"
+        RP="2|5|10|25|50|100|200|500|1000"
     threads: 4  # Adjust based on your system capabilities
     resources:
         mem_mb=8000  # Adjust based on your system memory
