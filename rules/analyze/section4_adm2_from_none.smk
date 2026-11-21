@@ -10,6 +10,7 @@ Targets:
     snakemake -n section4_none_test                  # dry run, RWA only
     snakemake -c1 section4_none_test                 # RWA only
     snakemake -c4 -k --rerun-incomplete section4_none_both     # all countries, JRC and GIRI
+    snakemake -c4 -k --rerun-incomplete section4_frwi          # both baselines, JRC and GIRI, filled RWI
 
 Files to copy back for the notebook:
     data/results/section4_adm2/section4_adm2_ADM2_{jrc,giri}-flood_S-rwi_from-none.csv
@@ -212,3 +213,13 @@ rule section4_none_test:
     input:
         "data/results/section4_adm2/countries/RWA/RWA_ADM2_units_jrc-flood_S-rwi_from-none.csv",
         "data/results/adaptation/costs/countries/RWA/RWA_adaptation-cost_fp_rp100_all-ADM2_from-none.gpkg",
+
+
+rule section4_frwi:
+    """Both baselines (FLOPROS and from-none), JRC and GIRI, with the filled RWI (every populated cell ranked).
+    Reuses the existing risk rasters, so only the per-country tables and the combine steps run."""
+    input:
+        "data/results/section4_adm2/section4_adm2_ADM2_jrc-flood_S-frwi.csv",
+        "data/results/section4_adm2/section4_adm2_ADM2_giri-flood_S-frwi.csv",
+        "data/results/section4_adm2/section4_adm2_ADM2_jrc-flood_S-frwi_from-none.csv",
+        "data/results/section4_adm2/section4_adm2_ADM2_giri-flood_S-frwi_from-none.csv",
